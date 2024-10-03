@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>blocksnet.method.annealing_optimizer &mdash; BlocksNet 0.0.11 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="blocksnet.method.base_method" href="blocksnet.method.base_method.html" />
+    <link rel="prev" title="blocksnet.method.accessibility" href="blocksnet.method.accessibility.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            BlocksNet
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../blocksnet/index.html">BlocksNet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="blocksnet.preprocessing.html">blocksnet.preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="blocksnet.models.html">blocksnet.models</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="blocksnet.method.html">blocksnet.method</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.accessibility.html">blocksnet.method.accessibility</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">blocksnet.method.annealing_optimizer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Variable"><code class="docutils literal notranslate"><span class="pre">Variable</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Indicator"><code class="docutils literal notranslate"><span class="pre">Indicator</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blocksnet.method.annealing_optimizer.AnnealingOptimizer"><code class="docutils literal notranslate"><span class="pre">AnnealingOptimizer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.base_method.html">blocksnet.method.base_method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.centrality.html">blocksnet.method.centrality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.connectivity.html">blocksnet.method.connectivity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.diversity.html">blocksnet.method.diversity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.integration.html">blocksnet.method.integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.land_use_prediction.html">blocksnet.method.land_use_prediction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.population_centrality.html">blocksnet.method.population_centrality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.provision.html">blocksnet.method.provision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.spacematrix.html">blocksnet.method.spacematrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.vacant_area.html">blocksnet.method.vacant_area</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="blocksnet.utils.html">blocksnet.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../about_us.html">About us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BlocksNet</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
+          <li class="breadcrumb-item"><a href="blocksnet.method.html">blocksnet.method</a></li>
+      <li class="breadcrumb-item active">blocksnet.method.annealing_optimizer</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/_autosummary/blocksnet.method.annealing_optimizer.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-blocksnet.method.annealing_optimizer">
+<span id="blocksnet-method-annealing-optimizer"></span><h1>blocksnet.method.annealing_optimizer<a class="headerlink" href="#module-blocksnet.method.annealing_optimizer" title="Permalink to this heading"></a></h1>
+<p>Module providing class for simulated annealing optimization of blocks services constrained by land uses.</p>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blocksnet.method.annealing_optimizer.AnnealingOptimizer" title="blocksnet.method.annealing_optimizer.AnnealingOptimizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AnnealingOptimizer</span></code></a>(*, city_model[, verbose, ...])</p></td>
+<td><p>Services optimizer using simulated annealing to maximize scenario provision objective function by building certain services.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Indicator" title="blocksnet.method.annealing_optimizer.Indicator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Indicator</span></code></a>(block, land_use, fsi, gsi)</p></td>
+<td><p>Represents indicators for a block based on land use and spatial indices.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Variable" title="blocksnet.method.annealing_optimizer.Variable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Variable</span></code></a>(block, service_type, brick[, value])</p></td>
+<td><p>Represents a variable for optimization in a given block with a specific service type and brick.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.Variable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blocksnet.method.annealing_optimizer.</span></span><span class="sig-name descname"><span class="pre">Variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.city.html#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><span class="pre">Block</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">service_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">ServiceType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">brick</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceBrick" title="blocksnet.models.service_type.ServiceBrick"><span class="pre">ServiceBrick</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/method/annealing_optimizer.html#Variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.annealing_optimizer.Variable" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents a variable for optimization in a given block with a specific service type and brick.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>block</strong> (<a class="reference internal" href="blocksnet.models.city.html#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><em>Block</em></a>) – The block where the service is located.</p></li>
+<li><p><strong>service_type</strong> (<a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><em>ServiceType</em></a>) – The type of service provided.</p></li>
+<li><p><strong>brick</strong> (<a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceBrick" title="blocksnet.models.service_type.ServiceBrick"><em>ServiceBrick</em></a>) – The brick representing the service’s characteristics.</p></li>
+<li><p><strong>value</strong> (<em>int</em><em>, </em><em>optional</em>) – The quantity of the service brick, by default 0.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.Variable.capacity">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">capacity</span></span><a class="headerlink" href="#blocksnet.method.annealing_optimizer.Variable.capacity" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the total capacity of the service brick in the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The total capacity of the service brick.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.Variable.area">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">area</span></span><a class="headerlink" href="#blocksnet.method.annealing_optimizer.Variable.area" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the total area occupied by the service brick.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The total area occupied by the service brick.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.Variable.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/method/annealing_optimizer.html#Variable.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.annealing_optimizer.Variable.to_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Converts the Variable instance to a dictionary representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary containing the block ID, service type, brick capacity, brick area, whether the brick is integrated,
+and the value of the brick.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.Indicator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blocksnet.method.annealing_optimizer.</span></span><span class="sig-name descname"><span class="pre">Indicator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.city.html#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><span class="pre">Block</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">land_use</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><span class="pre">LandUse</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fsi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gsi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/method/annealing_optimizer.html#Indicator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.annealing_optimizer.Indicator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents indicators for a block based on land use and spatial indices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>block</strong> (<a class="reference internal" href="blocksnet.models.city.html#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><em>Block</em></a>) – The block being evaluated.</p></li>
+<li><p><strong>land_use</strong> (<a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><em>LandUse</em></a>) – The type of land use for the block.</p></li>
+<li><p><strong>fsi</strong> (<em>float</em>) – The Floor Space Index (FSI) of the block.</p></li>
+<li><p><strong>gsi</strong> (<em>float</em>) – The Ground Space Index (GSI) of the block.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.Indicator.site_area">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">site_area</span></span><a class="headerlink" href="#blocksnet.method.annealing_optimizer.Indicator.site_area" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the site area of the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The site area of the block.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.Indicator.footprint_area">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">footprint_area</span></span><a class="headerlink" href="#blocksnet.method.annealing_optimizer.Indicator.footprint_area" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the footprint area of the block based on the GSI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The footprint area of the block.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.Indicator.build_floor_area">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build_floor_area</span></span><a class="headerlink" href="#blocksnet.method.annealing_optimizer.Indicator.build_floor_area" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the buildable floor area of the block based on the FSI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The buildable floor area of the block.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.Indicator.integrated_area">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">integrated_area</span></span><a class="headerlink" href="#blocksnet.method.annealing_optimizer.Indicator.integrated_area" title="Permalink to this definition"></a></dt>
+<dd><p>Determines the integrated area of the block based on land use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The integrated area of the block.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.Indicator.non_integrated_area">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">non_integrated_area</span></span><a class="headerlink" href="#blocksnet.method.annealing_optimizer.Indicator.non_integrated_area" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the non-integrated area of the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The non-integrated area of the block.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.Indicator.living_area">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">living_area</span></span><a class="headerlink" href="#blocksnet.method.annealing_optimizer.Indicator.living_area" title="Permalink to this definition"></a></dt>
+<dd><p>Determines the living area of the block based on land use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The living area of the block. Returns 0 if land use is not residential.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.Indicator.population">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">population</span></span><a class="headerlink" href="#blocksnet.method.annealing_optimizer.Indicator.population" title="Permalink to this definition"></a></dt>
+<dd><p>Estimates the population of the block based on living area and demand.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The estimated population of the block.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.Indicator.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/annealing_optimizer.html#Indicator.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.annealing_optimizer.Indicator.to_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Converts the Indicator instance to a dictionary representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary containing block ID, site area, land use, footprint area, build floor area, integrated area,
+non-integrated area, living area, and population.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.AnnealingOptimizer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blocksnet.method.annealing_optimizer.</span></span><span class="sig-name descname"><span class="pre">AnnealingOptimizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.city.html#blocksnet.models.city.City" title="blocksnet.models.city.City"><span class="pre">City</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_iteration</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Variable" title="blocksnet.method.annealing_optimizer.Variable"><span class="pre">blocksnet.method.annealing_optimizer.Variable</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Indicator" title="blocksnet.method.annealing_optimizer.Indicator"><span class="pre">blocksnet.method.annealing_optimizer.Indicator</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/method/annealing_optimizer.html#AnnealingOptimizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.annealing_optimizer.AnnealingOptimizer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="blocksnet.method.base_method.html#blocksnet.method.base_method.BaseMethod" title="blocksnet.method.base_method.BaseMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMethod</span></code></a></p>
+<p>Services optimizer using simulated annealing to maximize scenario provision objective function by building certain services.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>on_iteration</strong> (<em>Callable</em><em>[</em><em>[</em><em>int</em><em>, </em><em>list</em><em>[</em><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Variable" title="blocksnet.method.annealing_optimizer.Variable"><em>Variable</em></a><em>]</em><em>, </em><em>dict</em><em>[</em><em>int</em><em>, </em><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Indicator" title="blocksnet.method.annealing_optimizer.Indicator"><em>Indicator</em></a><em>]</em><em>, </em><em>float</em><em>]</em><em>, </em><em>None</em><em>] </em><em>| </em><em>None</em>) – A callback function to be called after each iteration with the current iteration number,
+the current list of variables, indicators, and the best value found so far.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.AnnealingOptimizer.on_iteration">
+<span class="sig-name descname"><span class="pre">on_iteration</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Variable" title="blocksnet.method.annealing_optimizer.Variable"><span class="pre">blocksnet.method.annealing_optimizer.Variable</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Indicator" title="blocksnet.method.annealing_optimizer.Indicator"><span class="pre">blocksnet.method.annealing_optimizer.Indicator</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#blocksnet.method.annealing_optimizer.AnnealingOptimizer.on_iteration" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.AnnealingOptimizer._check_constraints">
+<span class="sig-name descname"><span class="pre">_check_constraints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indicators</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/annealing_optimizer.html#AnnealingOptimizer._check_constraints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.annealing_optimizer.AnnealingOptimizer._check_constraints" title="Permalink to this definition"></a></dt>
+<dd><p>Checks if the current solution satisfies all constraints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>list</em><em>[</em><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Variable" title="blocksnet.method.annealing_optimizer.Variable"><em>Variable</em></a><em>]</em>) – List of variables representing the current solution.</p></li>
+<li><p><strong>indicators</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Indicator" title="blocksnet.method.annealing_optimizer.Indicator"><em>Indicator</em></a><em>]</em>) – Dictionary mapping block IDs to their corresponding indicators.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if all constraints are satisfied, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.AnnealingOptimizer._perturb">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_perturb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Variable" title="blocksnet.method.annealing_optimizer.Variable"><span class="pre">blocksnet.method.annealing_optimizer.Variable</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Variable" title="blocksnet.method.annealing_optimizer.Variable"><span class="pre">blocksnet.method.annealing_optimizer.Variable</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">blocksnet.models.service_type.ServiceType</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/annealing_optimizer.html#AnnealingOptimizer._perturb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.annealing_optimizer.AnnealingOptimizer._perturb" title="Permalink to this definition"></a></dt>
+<dd><p>Perturbs the current solution by modifying a randomly chosen variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>list</em><em>[</em><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Variable" title="blocksnet.method.annealing_optimizer.Variable"><em>Variable</em></a><em>]</em>) – List of variables representing the current solution.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing the perturbed list of variables and the service type of the perturbed variable.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[list[<a class="reference internal" href="#blocksnet.method.annealing_optimizer.Variable" title="blocksnet.method.annealing_optimizer.Variable">Variable</a>], <a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType">ServiceType</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.AnnealingOptimizer._generate_initial_X">
+<span class="sig-name descname"><span class="pre">_generate_initial_X</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks_lu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><span class="pre">blocksnet.models.land_use.LandUse</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service_types</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Variable" title="blocksnet.method.annealing_optimizer.Variable"><span class="pre">blocksnet.method.annealing_optimizer.Variable</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/annealing_optimizer.html#AnnealingOptimizer._generate_initial_X"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.annealing_optimizer.AnnealingOptimizer._generate_initial_X" title="Permalink to this definition"></a></dt>
+<dd><p>Generates an initial list of variables for the optimization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>blocks_lu</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><em>LandUse</em></a><em>]</em>) – Dictionary mapping block IDs to their corresponding land uses.</p></li>
+<li><p><strong>service_types</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>float</em><em>]</em>) – Dictionary mapping service type names to their weights.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of variables representing the initial solution.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#blocksnet.method.annealing_optimizer.Variable" title="blocksnet.method.annealing_optimizer.Variable">Variable</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.AnnealingOptimizer._generate_indicators">
+<span class="sig-name descname"><span class="pre">_generate_indicators</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fsis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gsis</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Indicator" title="blocksnet.method.annealing_optimizer.Indicator"><span class="pre">blocksnet.method.annealing_optimizer.Indicator</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/annealing_optimizer.html#AnnealingOptimizer._generate_indicators"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.annealing_optimizer.AnnealingOptimizer._generate_indicators" title="Permalink to this definition"></a></dt>
+<dd><p>Generates indicators for each block based on the provided data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>blocks</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><em>LandUse</em></a><em>]</em>) – Dictionary mapping block IDs to their corresponding land uses.</p></li>
+<li><p><strong>fsis</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><em>float</em><em>]</em>) – Dictionary mapping block IDs to their Floor Space Index (FSI) values.</p></li>
+<li><p><strong>gsis</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><em>float</em><em>]</em>) – Dictionary mapping block IDs to their Ground Space Index (GSI) values.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary mapping block IDs to their corresponding indicators.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[int, <a class="reference internal" href="#blocksnet.method.annealing_optimizer.Indicator" title="blocksnet.method.annealing_optimizer.Indicator">Indicator</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.AnnealingOptimizer.to_gdf">
+<span class="sig-name descname"><span class="pre">to_gdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Variable" title="blocksnet.method.annealing_optimizer.Variable"><span class="pre">blocksnet.method.annealing_optimizer.Variable</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indicators</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Indicator" title="blocksnet.method.annealing_optimizer.Indicator"><span class="pre">blocksnet.method.annealing_optimizer.Indicator</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/annealing_optimizer.html#AnnealingOptimizer.to_gdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.annealing_optimizer.AnnealingOptimizer.to_gdf" title="Permalink to this definition"></a></dt>
+<dd><p>Converts the list of variables and indicators into a GeoDataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>list</em><em>[</em><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Variable" title="blocksnet.method.annealing_optimizer.Variable"><em>Variable</em></a><em>]</em>) – List of variables representing the current solution.</p></li>
+<li><p><strong>indicators</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Indicator" title="blocksnet.method.annealing_optimizer.Indicator"><em>Indicator</em></a><em>]</em>) – Dictionary mapping block IDs to their corresponding indicators.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A GeoDataFrame containing optimization result data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>gpd.GeoDataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.AnnealingOptimizer.to_bricks_df">
+<span class="sig-name descname"><span class="pre">to_bricks_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Variable" title="blocksnet.method.annealing_optimizer.Variable"><span class="pre">blocksnet.method.annealing_optimizer.Variable</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/annealing_optimizer.html#AnnealingOptimizer.to_bricks_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.annealing_optimizer.AnnealingOptimizer.to_bricks_df" title="Permalink to this definition"></a></dt>
+<dd><p>Converts the list of variables into a DataFrame representing the bricks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>list</em><em>[</em><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Variable" title="blocksnet.method.annealing_optimizer.Variable"><em>Variable</em></a><em>]</em>) – List of variables representing the current solution.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A DataFrame containing data about the bricks in the solution.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.AnnealingOptimizer._get_clear_df">
+<span class="sig-name descname"><span class="pre">_get_clear_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/annealing_optimizer.html#AnnealingOptimizer._get_clear_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.annealing_optimizer.AnnealingOptimizer._get_clear_df" title="Permalink to this definition"></a></dt>
+<dd><p>Constructs a DataFrame for provision assessment so the blocks being changed are treated as cleared.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>blocks</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – List of changing blocks ids.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A DataFrame containing information related to blocks being changed for provision assessment.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.AnnealingOptimizer.to_df">
+<span class="sig-name descname"><span class="pre">to_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Variable" title="blocksnet.method.annealing_optimizer.Variable"><span class="pre">blocksnet.method.annealing_optimizer.Variable</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indicators</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Indicator" title="blocksnet.method.annealing_optimizer.Indicator"><span class="pre">blocksnet.method.annealing_optimizer.Indicator</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/annealing_optimizer.html#AnnealingOptimizer.to_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.annealing_optimizer.AnnealingOptimizer.to_df" title="Permalink to this definition"></a></dt>
+<dd><p>Converts the list of variables and indicators into a DataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>list</em><em>[</em><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Variable" title="blocksnet.method.annealing_optimizer.Variable"><em>Variable</em></a><em>]</em>) – List of variables representing the current solution.</p></li>
+<li><p><strong>indicators</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><a class="reference internal" href="#blocksnet.method.annealing_optimizer.Indicator" title="blocksnet.method.annealing_optimizer.Indicator"><em>Indicator</em></a><em>]</em>) – Dictionary mapping block IDs to their corresponding indicators.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A DataFrame containing data about the blocks and their service capacities.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.AnnealingOptimizer.calculate">
+<span class="sig-name descname"><span class="pre">calculate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks_lu</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><span class="pre">blocksnet.models.land_use.LandUse</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocks_fsi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocks_gsi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service_types</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/annealing_optimizer.html#AnnealingOptimizer.calculate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.annealing_optimizer.AnnealingOptimizer.calculate" title="Permalink to this definition"></a></dt>
+<dd><p>Executes the services optimization process based on simulated annealing for provided service types weights and blocks landuses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>blocks_lu</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><em>LandUse</em></a><em>]</em>) – Dictionary mapping block IDs to their corresponding land uses.</p></li>
+<li><p><strong>blocks_fsi</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><em>float</em><em>]</em>) – Dictionary mapping block IDs to their Floor Space Index (FSI) values.</p></li>
+<li><p><strong>blocks_gsi</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><em>float</em><em>]</em>) – Dictionary mapping block IDs to their Ground Space Index (GSI) values.</p></li>
+<li><p><strong>service_types</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>float</em><em>]</em>) – Dictionary mapping service type names to their weights.</p></li>
+<li><p><strong>t_max</strong> (<em>float</em><em>, </em><em>optional</em>) – The maximum temperature for the annealing process, by default 100.</p></li>
+<li><p><strong>t_min</strong> (<em>float</em><em>, </em><em>optional</em>) – The minimum temperature for the annealing process, by default 1e-3.</p></li>
+<li><p><strong>rate</strong> (<em>float</em><em>, </em><em>optional</em>) – The cooling rate of the temperature, by default 0.95.</p></li>
+<li><p><strong>max_iter</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum number of iterations, by default 1000.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing the best solution found, the indicators, the best value, and the provision values for each service type.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.method.annealing_optimizer.AnnealingOptimizer.model_computed_fields">
+<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#blocksnet.method.annealing_optimizer.AnnealingOptimizer.model_computed_fields" title="Permalink to this definition"></a></dt>
+<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="blocksnet.method.accessibility.html" class="btn btn-neutral float-left" title="blocksnet.method.accessibility" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="blocksnet.method.base_method.html" class="btn btn-neutral float-right" title="blocksnet.method.base_method" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023-2024, IDU.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

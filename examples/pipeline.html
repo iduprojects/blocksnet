@@ -1,0 +1,2317 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pipeline &mdash; BlocksNet 0.0.11 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/nbsphinx-code-cells.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="City blocks layer generating" href="blocks_generator.html" />
+    <link rel="prev" title="Examples" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            BlocksNet
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../blocksnet/index.html">BlocksNet</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Examples</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Pipeline</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#0.-BlocksNet-Installation">0. <strong>BlocksNet</strong> Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#1.-Generating-a-layer-of-city-blocks">1. Generating a layer of city blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#2.-Generating-an-intermodal-graph">2. Generating an intermodal graph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#3.-Calculating-an-accessibility-matrix">3. Calculating an accessibility matrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#4.-City-model-initialization">4. City model initialization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#5.-Methods-for-urban-environment-analysis">5. Methods for urban environment analysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#5.1.-Accessibility">5.1. Accessibility</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#5.2.-Connectivity">5.2. Connectivity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#5.3.-Service-Provision">5.3. Service Provision</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#5.4.-Services-composition-optimization">5.4. Services composition optimization</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="blocks_generator.html">City blocks layer generating</a></li>
+<li class="toctree-l2"><a class="reference internal" href="accessibility_processor.html">Generating intermodal graph and calculating accessibility matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="city.html">City initialization and methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="methods/index.html">Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cases/index.html">Cases</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about_us.html">About us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">BlocksNet</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Examples</a></li>
+      <li class="breadcrumb-item active">Pipeline</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/examples/pipeline.nblink.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Pipeline">
+<h1>Pipeline<a class="headerlink" href="#Pipeline" title="Permalink to this heading"></a></h1>
+<section id="0.-BlocksNet-Installation">
+<h2>0. <strong>BlocksNet</strong> Installation<a class="headerlink" href="#0.-BlocksNet-Installation" title="Permalink to this heading"></a></h2>
+<p>Import <code class="docutils literal notranslate"><span class="pre">geopandas</span></code> and set a local coordinate reference system (in EPSG format). Local CRS also can be determined by <code class="docutils literal notranslate"><span class="pre">estimate_utm_crs()</span></code> method of certain <code class="docutils literal notranslate"><span class="pre">GeoDataFrame</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import geopandas as gpd
+import os
+
+data_path = &#39;./../tests/data/&#39;
+local_crs = 32637
+</pre></div>
+</div>
+</div>
+</section>
+<section id="1.-Generating-a-layer-of-city-blocks">
+<h2>1. Generating a layer of city blocks<a class="headerlink" href="#1.-Generating-a-layer-of-city-blocks" title="Permalink to this heading"></a></h2>
+<p>Import <code class="docutils literal notranslate"><span class="pre">BlocksGenerator</span></code> class from the library.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from blocksnet import BlocksGenerator
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<script type="text/javascript">
+<!--
+
+{
+        var element = document.getElementById('NetworKit_script');
+        if (element) {
+                element.parentNode.removeChild(element);
+        }
+        element = document.createElement('script');
+        element.type = 'text/javascript';
+        element.innerHTML = 'function NetworKit_pageEmbed(id) { var i, j; var elements; elements = document.getElementById(id).getElementsByClassName("Plot"); for (i=0; i<elements.length; i++) { elements[i].id = id + "_Plot_" + i; var data = elements[i].getAttribute("data-image").split("|"); elements[i].removeAttribute("data-image"); var content = "<div class=\\"Image\\" id=\\"" + elements[i].id + "_Image\\" />"; elements[i].innerHTML = content; elements[i].setAttribute("data-image-index", 0); elements[i].setAttribute("data-image-length", data.length); for (j=0; j<data.length; j++) { elements[i].setAttribute("data-image-" + j, data[j]); } NetworKit_plotUpdate(elements[i]); elements[i].onclick = function (e) { NetworKit_overlayShow((e.target) ? e.target : e.srcElement); } } elements = document.getElementById(id).getElementsByClassName("HeatCell"); for (i=0; i<elements.length; i++) { var data = parseFloat(elements[i].getAttribute("data-heat")); var color = "#00FF00"; if (data <= 1 && data > 0) { color = "hsla(0, 100%, 75%, " + (data) + ")"; } else if (data <= 0 && data >= -1) { color = "hsla(240, 100%, 75%, " + (-data) + ")"; } elements[i].style.backgroundColor = color; } elements = document.getElementById(id).getElementsByClassName("Details"); for (i=0; i<elements.length; i++) { elements[i].setAttribute("data-title", "-"); NetworKit_toggleDetails(elements[i]); elements[i].onclick = function (e) { NetworKit_toggleDetails((e.target) ? e.target : e.srcElement); } } elements = document.getElementById(id).getElementsByClassName("MathValue"); for (i=elements.length-1; i>=0; i--) { value = elements[i].innerHTML.trim(); if (value === "nan") { elements[i].parentNode.innerHTML = "" } } elements = document.getElementById(id).getElementsByClassName("SubCategory"); for (i=elements.length-1; i>=0; i--) { value = elements[i].innerHTML.trim(); if (value === "") { elements[i].parentNode.removeChild(elements[i]) } } elements = document.getElementById(id).getElementsByClassName("Category"); for (i=elements.length-1; i>=0; i--) { value = elements[i].innerHTML.trim(); if (value === "") { elements[i].parentNode.removeChild(elements[i]) } } var isFirefox = false; try { isFirefox = typeof InstallTrigger !== "undefined"; } catch (e) {} if (!isFirefox) { alert("Currently the function\'s output is only fully supported by Firefox."); } } function NetworKit_plotUpdate(source) { var index = source.getAttribute("data-image-index"); var data = source.getAttribute("data-image-" + index); var image = document.getElementById(source.id + "_Image"); image.style.backgroundImage = "url(" + data + ")"; } function NetworKit_showElement(id, show) { var element = document.getElementById(id); element.style.display = (show) ? "block" : "none"; } function NetworKit_overlayShow(source) { NetworKit_overlayUpdate(source); NetworKit_showElement("NetworKit_Overlay", true); } function NetworKit_overlayUpdate(source) { document.getElementById("NetworKit_Overlay_Title").innerHTML = source.title; var index = source.getAttribute("data-image-index"); var data = source.getAttribute("data-image-" + index); var image = document.getElementById("NetworKit_Overlay_Image"); image.setAttribute("data-id", source.id); image.style.backgroundImage = "url(" + data + ")"; var link = document.getElementById("NetworKit_Overlay_Toolbar_Bottom_Save"); link.href = data; link.download = source.title + ".svg"; } function NetworKit_overlayImageShift(delta) { var image = document.getElementById("NetworKit_Overlay_Image"); var source = document.getElementById(image.getAttribute("data-id")); var index = parseInt(source.getAttribute("data-image-index")); var length = parseInt(source.getAttribute("data-image-length")); var index = (index+delta) % length; if (index < 0) { index = length + index; } source.setAttribute("data-image-index", index); NetworKit_overlayUpdate(source); } function NetworKit_toggleDetails(source) { var childs = source.children; var show = false; if (source.getAttribute("data-title") == "-") { source.setAttribute("data-title", "+"); show = false; } else { source.setAttribute("data-title", "-"); show = true; } for (i=0; i<childs.length; i++) { if (show) { childs[i].style.display = "block"; } else { childs[i].style.display = "none"; } } }';
+        element.setAttribute('id', 'NetworKit_script');
+        document.head.appendChild(element);
+}
+
+
+{
+        var element = document.getElementById('NetworKit_style');
+        if (element) {
+                element.parentNode.removeChild(element);
+        }
+        element = document.createElement('style');
+        element.type = 'text/css';
+        element.innerHTML = '.NetworKit_Page { font-family: Arial, Helvetica, sans-serif; font-size: 14px; } .NetworKit_Page .Value:before { font-family: Arial, Helvetica, sans-serif; font-size: 1.05em; content: attr(data-title) ":"; margin-left: -2.5em; padding-right: 0.5em; } .NetworKit_Page .Details .Value:before { display: block; } .NetworKit_Page .Value { font-family: monospace; white-space: pre; padding-left: 2.5em; white-space: -moz-pre-wrap !important; white-space: -pre-wrap; white-space: -o-pre-wrap; white-space: pre-wrap; word-wrap: break-word; tab-size: 4; -moz-tab-size: 4; } .NetworKit_Page .Category { clear: both; padding-left: 1em; margin-bottom: 1.5em; } .NetworKit_Page .Category:before { content: attr(data-title); font-size: 1.75em; display: block; margin-left: -0.8em; margin-bottom: 0.5em; } .NetworKit_Page .SubCategory { margin-bottom: 1.5em; padding-left: 1em; } .NetworKit_Page .SubCategory:before { font-size: 1.6em; display: block; margin-left: -0.8em; margin-bottom: 0.5em; } .NetworKit_Page .SubCategory[data-title]:before { content: attr(data-title); } .NetworKit_Page .Block { display: block; } .NetworKit_Page .Block:after { content: "."; visibility: hidden; display: block; height: 0; clear: both; } .NetworKit_Page .Block .Thumbnail_Overview, .NetworKit_Page .Block .Thumbnail_ScatterPlot { width: 260px; float: left; } .NetworKit_Page .Block .Thumbnail_Overview img, .NetworKit_Page .Block .Thumbnail_ScatterPlot img { width: 260px; } .NetworKit_Page .Block .Thumbnail_Overview:before, .NetworKit_Page .Block .Thumbnail_ScatterPlot:before { display: block; text-align: center; font-weight: bold; } .NetworKit_Page .Block .Thumbnail_Overview:before { content: attr(data-title); } .NetworKit_Page .HeatCell { font-family: "Courier New", Courier, monospace; cursor: pointer; } .NetworKit_Page .HeatCell, .NetworKit_Page .HeatCellName { display: inline; padding: 0.1em; margin-right: 2px; background-color: #FFFFFF } .NetworKit_Page .HeatCellName { margin-left: 0.25em; } .NetworKit_Page .HeatCell:before { content: attr(data-heat); display: inline-block; color: #000000; width: 4em; text-align: center; } .NetworKit_Page .Measure { clear: both; } .NetworKit_Page .Measure .Details { cursor: pointer; } .NetworKit_Page .Measure .Details:before { content: "[" attr(data-title) "]"; display: block; } .NetworKit_Page .Measure .Details .Value { border-left: 1px dotted black; margin-left: 0.4em; padding-left: 3.5em; pointer-events: none; } .NetworKit_Page .Measure .Details .Spacer:before { content: "."; opacity: 0.0; pointer-events: none; } .NetworKit_Page .Measure .Plot { width: 440px; height: 440px; cursor: pointer; float: left; margin-left: -0.9em; margin-right: 20px; } .NetworKit_Page .Measure .Plot .Image { background-repeat: no-repeat; background-position: center center; background-size: contain; height: 100%; pointer-events: none; } .NetworKit_Page .Measure .Stat { width: 500px; float: left; } .NetworKit_Page .Measure .Stat .Group { padding-left: 1.25em; margin-bottom: 0.75em; } .NetworKit_Page .Measure .Stat .Group .Title { font-size: 1.1em; display: block; margin-bottom: 0.3em; margin-left: -0.75em; border-right-style: dotted; border-right-width: 1px; border-bottom-style: dotted; border-bottom-width: 1px; background-color: #D0D0D0; padding-left: 0.2em; } .NetworKit_Page .Measure .Stat .Group .List { -webkit-column-count: 3; -moz-column-count: 3; column-count: 3; } .NetworKit_Page .Measure .Stat .Group .List .Entry { position: relative; line-height: 1.75em; } .NetworKit_Page .Measure .Stat .Group .List .Entry[data-tooltip]:before { position: absolute; left: 0; top: -40px; background-color: #808080; color: #ffffff; height: 30px; line-height: 30px; border-radius: 5px; padding: 0 15px; content: attr(data-tooltip); white-space: nowrap; display: none; } .NetworKit_Page .Measure .Stat .Group .List .Entry[data-tooltip]:after { position: absolute; left: 15px; top: -10px; border-top: 7px solid #808080; border-left: 7px solid transparent; border-right: 7px solid transparent; content: ""; display: none; } .NetworKit_Page .Measure .Stat .Group .List .Entry[data-tooltip]:hover:after, .NetworKit_Page .Measure .Stat .Group .List .Entry[data-tooltip]:hover:before { display: block; } .NetworKit_Page .Measure .Stat .Group .List .Entry .MathValue { font-family: "Courier New", Courier, monospace; } .NetworKit_Page .Measure:after { content: "."; visibility: hidden; display: block; height: 0; clear: both; } .NetworKit_Page .PartitionPie { clear: both; } .NetworKit_Page .PartitionPie img { width: 600px; } #NetworKit_Overlay { left: 0px; top: 0px; display: none; position: absolute; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 1000; } #NetworKit_Overlay_Title { position: absolute; color: white; transform: rotate(-90deg); width: 32em; height: 32em; padding-right: 0.5em; padding-top: 0.5em; text-align: right; font-size: 40px; } #NetworKit_Overlay .button { background: white; cursor: pointer; } #NetworKit_Overlay .button:before { size: 13px; display: inline-block; text-align: center; margin-top: 0.5em; margin-bottom: 0.5em; width: 1.5em; height: 1.5em; } #NetworKit_Overlay .icon-close:before { content: "X"; } #NetworKit_Overlay .icon-previous:before { content: "P"; } #NetworKit_Overlay .icon-next:before { content: "N"; } #NetworKit_Overlay .icon-save:before { content: "S"; } #NetworKit_Overlay_Toolbar_Top, #NetworKit_Overlay_Toolbar_Bottom { position: absolute; width: 40px; right: 13px; text-align: right; z-index: 1100; } #NetworKit_Overlay_Toolbar_Top { top: 0.5em; } #NetworKit_Overlay_Toolbar_Bottom { Bottom: 0.5em; } #NetworKit_Overlay_ImageContainer { position: absolute; top: 5%; left: 5%; height: 90%; width: 90%; background-repeat: no-repeat; background-position: center center; background-size: contain; } #NetworKit_Overlay_Image { height: 100%; width: 100%; background-repeat: no-repeat; background-position: center center; background-size: contain; }';
+        element.setAttribute('id', 'NetworKit_style');
+        document.head.appendChild(element);
+}
+
+
+{
+        var element = document.getElementById('NetworKit_Overlay');
+        if (element) {
+                element.parentNode.removeChild(element);
+        }
+        element = document.createElement('div');
+        element.innerHTML = '<div id="NetworKit_Overlay_Toolbar_Top"><div class="button icon-close" id="NetworKit_Overlay_Close" /></div><div id="NetworKit_Overlay_Title" /> <div id="NetworKit_Overlay_ImageContainer"> <div id="NetworKit_Overlay_Image" /> </div> <div id="NetworKit_Overlay_Toolbar_Bottom"> <div class="button icon-previous" onclick="NetworKit_overlayImageShift(-1)" /> <div class="button icon-next" onclick="NetworKit_overlayImageShift(1)" /> <a id="NetworKit_Overlay_Toolbar_Bottom_Save"><div class="button icon-save" /></a> </div>';
+        element.setAttribute('id', 'NetworKit_Overlay');
+        document.body.appendChild(element);
+        document.getElementById('NetworKit_Overlay_Close').onclick = function (e) {
+                document.getElementById('NetworKit_Overlay').style.display = 'none';
+        }
+}
+
+-->
+</script></div>
+</div>
+<p>Read <code class="docutils literal notranslate"><span class="pre">parquet</span></code>/<code class="docutils literal notranslate"><span class="pre">geojson</span></code> files with the geometries needed for the generator. One can retrieve the geometries themselve from OSM by the tags provided in <code class="docutils literal notranslate"><span class="pre">BlocksGenerator</span></code> description. Reproject the geometries to local coordinate reference system.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>boundaries = gpd.read_parquet(os.path.join(data_path, &#39;boundaries.parquet&#39;)).to_crs(local_crs)
+water = gpd.read_parquet(os.path.join(data_path, &#39;water.parquet&#39;)).to_crs(local_crs)
+roads = gpd.read_parquet(os.path.join(data_path, &#39;roads.parquet&#39;)).to_crs(local_crs)
+railways = gpd.read_parquet(os.path.join(data_path, &#39;railways.parquet&#39;)).to_crs(local_crs)
+</pre></div>
+</div>
+</div>
+<p>Initialize <code class="docutils literal notranslate"><span class="pre">BlocksGenerator</span></code> with loaded geometries. Then call <code class="docutils literal notranslate"><span class="pre">run</span></code> method to get a <code class="docutils literal notranslate"><span class="pre">GeoDataFrame</span></code> with block geometries.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>bg = BlocksGenerator(
+  boundaries=boundaries,
+  water=water,
+  roads=roads,
+  railways=railways
+)
+blocks = bg.run()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2024-09-25 18:47:18.880</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.preprocessing.blocks_generator</span>:<span class="ansi-cyan-fg">__init__</span>:<span class="ansi-cyan-fg">99</span> - <span class="ansi-bold">Check boundaries schema</span>
+<span class="ansi-green-fg">2024-09-25 18:47:18.909</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.preprocessing.blocks_generator</span>:<span class="ansi-cyan-fg">__init__</span>:<span class="ansi-cyan-fg">103</span> - <span class="ansi-bold">Check roads schema</span>
+<span class="ansi-green-fg">2024-09-25 18:47:18.922</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.preprocessing.blocks_generator</span>:<span class="ansi-cyan-fg">__init__</span>:<span class="ansi-cyan-fg">109</span> - <span class="ansi-bold">Check railways schema</span>
+<span class="ansi-green-fg">2024-09-25 18:47:18.931</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.preprocessing.blocks_generator</span>:<span class="ansi-cyan-fg">__init__</span>:<span class="ansi-cyan-fg">115</span> - <span class="ansi-bold">Check water schema</span>
+<span class="ansi-green-fg">2024-09-25 18:47:18.939</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.preprocessing.blocks_generator</span>:<span class="ansi-cyan-fg">__init__</span>:<span class="ansi-cyan-fg">124</span> - <span class="ansi-bold">Exclude water objects</span>
+<span class="ansi-green-fg">2024-09-25 18:47:18.988</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.preprocessing.blocks_generator</span>:<span class="ansi-cyan-fg">run</span>:<span class="ansi-cyan-fg">161</span> - <span class="ansi-bold">Generating blocks</span>
+<span class="ansi-green-fg">2024-09-25 18:47:19.003</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.preprocessing.blocks_generator</span>:<span class="ansi-cyan-fg">run</span>:<span class="ansi-cyan-fg">170</span> - <span class="ansi-bold">Setting up enclosures</span>
+<span class="ansi-green-fg">2024-09-25 18:47:19.166</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.preprocessing.blocks_generator</span>:<span class="ansi-cyan-fg">run</span>:<span class="ansi-cyan-fg">174</span> - <span class="ansi-bold">Filling holes</span>
+<span class="ansi-green-fg">2024-09-25 18:47:19.231</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.preprocessing.blocks_generator</span>:<span class="ansi-cyan-fg">run</span>:<span class="ansi-cyan-fg">178</span> - <span class="ansi-bold">Dropping overlapping blocks</span>
+<span class="ansi-green-fg">2024-09-25 18:47:19.359</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.preprocessing.blocks_generator</span>:<span class="ansi-cyan-fg">run</span>:<span class="ansi-cyan-fg">192</span> - <span class="ansi-bold">Calculating blocks area</span>
+<span class="ansi-green-fg">2024-09-25 18:47:19.371</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.preprocessing.blocks_generator</span>:<span class="ansi-cyan-fg">run</span>:<span class="ansi-cyan-fg">199</span> - <span class="ansi-bold">Blocks generated</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>blocks
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>POLYGON ((550762.290 6565038.844, 550768.857 6...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>POLYGON ((550768.857 6565033.563, 550762.290 6...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>POLYGON ((544937.479 6564706.592, 544935.619 6...</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>POLYGON ((544806.647 6565359.291, 544814.358 6...</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>POLYGON ((544793.346 6565395.228, 544800.150 6...</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>732</th>
+      <td>POLYGON ((550330.064 6563176.320, 550349.264 6...</td>
+    </tr>
+    <tr>
+      <th>733</th>
+      <td>POLYGON ((546106.838 6566506.429, 546183.774 6...</td>
+    </tr>
+    <tr>
+      <th>734</th>
+      <td>POLYGON ((552977.299 6562202.373, 553051.882 6...</td>
+    </tr>
+    <tr>
+      <th>735</th>
+      <td>POLYGON ((556605.841 6559581.667, 555984.050 6...</td>
+    </tr>
+    <tr>
+      <th>736</th>
+      <td>POLYGON ((552990.050 6562231.172, 552917.365 6...</td>
+    </tr>
+  </tbody>
+</table>
+<p>737 rows × 1 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>blocks.plot(figsize=(10,10)).set_axis_off()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_pipeline_12_0.png" src="../_images/examples_pipeline_12_0.png" />
+</div>
+</div>
+<p>The resulting blocks can be saved to a file.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>blocks.to_file(&#39;blocks.geojson&#39;)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="2.-Generating-an-intermodal-graph">
+<h2>2. Generating an intermodal graph<a class="headerlink" href="#2.-Generating-an-intermodal-graph" title="Permalink to this heading"></a></h2>
+<p>At this stage, you have to generate an <strong>intermodal graph</strong> by passing the blocks <code class="docutils literal notranslate"><span class="pre">GeoDataFrame</span></code> to <code class="docutils literal notranslate"><span class="pre">AccessibilityProcessor</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from blocksnet import AccessibilityProcessor
+
+ap = AccessibilityProcessor(blocks=blocks)
+intermodal_graph = ap.get_intermodal_graph()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "ae470e729ac445d38588f6e380eacb8b", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "b405abaac2b84790918bfc208165fdf7", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "c0b57ee65b5f41158680b4866cfaf6a7", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<p>Vizualization of the resulting intermodal graph.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ap.plot(blocks, intermodal_graph)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_pipeline_19_0.png" src="../_images/examples_pipeline_19_0.png" />
+</div>
+</div>
+<p>Saving the graph as a <code class="docutils literal notranslate"><span class="pre">geojson</span></code> file</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import osmnx as ox
+nodes, edges = ox.graph_to_gdfs(intermodal_graph)
+edges
+nodes.to_file(&#39;graph_nodes.geojson&#39;)
+edges[[&#39;geometry&#39;, &#39;type&#39;, &#39;route&#39;, &#39;length_meter&#39;, &#39;time_min&#39;]].to_file(&#39;graph_edges.geojson&#39;)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="3.-Calculating-an-accessibility-matrix">
+<h2>3. Calculating an accessibility matrix<a class="headerlink" href="#3.-Calculating-an-accessibility-matrix" title="Permalink to this heading"></a></h2>
+<p>Now, you can calculate an accessibility matrix using the <strong>blocks</strong> layer and <strong>intermodal graph</strong> acquired on the previous stages. This matrix is obtained by finding the shortest travel time between each pair of blocks in the intermodal graph.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>accessibility_matrix = ap.get_accessibility_matrix(graph=intermodal_graph)
+</pre></div>
+</div>
+</div>
+<p>Output of the obtained accessibility matrix. Each cell <code class="docutils literal notranslate"><span class="pre">[i,j]</span></code> represents the shortest travel time between block <code class="docutils literal notranslate"><span class="pre">i</span></code> and block <code class="docutils literal notranslate"><span class="pre">j</span></code>. The matrix doesn’t take into account created demand and traffic.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>accessibility_matrix.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>...</th>
+      <th>727</th>
+      <th>728</th>
+      <th>729</th>
+      <th>730</th>
+      <th>731</th>
+      <th>732</th>
+      <th>733</th>
+      <th>734</th>
+      <th>735</th>
+      <th>736</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.000000</td>
+      <td>4.195312</td>
+      <td>50.90625</td>
+      <td>36.781250</td>
+      <td>31.453125</td>
+      <td>40.15625</td>
+      <td>32.281250</td>
+      <td>33.437500</td>
+      <td>33.218750</td>
+      <td>35.125000</td>
+      <td>...</td>
+      <td>27.328125</td>
+      <td>23.65625</td>
+      <td>23.671875</td>
+      <td>14.171875</td>
+      <td>15.398438</td>
+      <td>19.71875</td>
+      <td>26.4375</td>
+      <td>26.43750</td>
+      <td>40.68750</td>
+      <td>18.609375</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>4.675781</td>
+      <td>0.000000</td>
+      <td>53.53125</td>
+      <td>39.406250</td>
+      <td>34.062500</td>
+      <td>42.78125</td>
+      <td>34.937500</td>
+      <td>36.093750</td>
+      <td>35.843750</td>
+      <td>37.750000</td>
+      <td>...</td>
+      <td>26.296875</td>
+      <td>22.62500</td>
+      <td>22.515625</td>
+      <td>13.007812</td>
+      <td>14.234375</td>
+      <td>18.56250</td>
+      <td>29.0625</td>
+      <td>25.96875</td>
+      <td>42.09375</td>
+      <td>19.968750</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>44.937500</td>
+      <td>46.437500</td>
+      <td>0.00000</td>
+      <td>41.500000</td>
+      <td>36.156250</td>
+      <td>53.12500</td>
+      <td>37.000000</td>
+      <td>38.156250</td>
+      <td>37.937500</td>
+      <td>39.812500</td>
+      <td>...</td>
+      <td>62.125000</td>
+      <td>58.46875</td>
+      <td>59.781250</td>
+      <td>50.281250</td>
+      <td>51.343750</td>
+      <td>51.78125</td>
+      <td>65.8125</td>
+      <td>63.28125</td>
+      <td>78.93750</td>
+      <td>56.875000</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>38.687500</td>
+      <td>40.187500</td>
+      <td>43.00000</td>
+      <td>0.000000</td>
+      <td>5.324219</td>
+      <td>23.53125</td>
+      <td>6.902344</td>
+      <td>8.062500</td>
+      <td>8.359375</td>
+      <td>10.242188</td>
+      <td>...</td>
+      <td>55.000000</td>
+      <td>51.34375</td>
+      <td>52.843750</td>
+      <td>44.031250</td>
+      <td>45.062500</td>
+      <td>44.65625</td>
+      <td>39.8125</td>
+      <td>57.03125</td>
+      <td>72.68750</td>
+      <td>50.593750</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>33.375000</td>
+      <td>34.843750</td>
+      <td>37.68750</td>
+      <td>5.324219</td>
+      <td>0.000000</td>
+      <td>18.21875</td>
+      <td>1.579102</td>
+      <td>2.736328</td>
+      <td>3.035156</td>
+      <td>4.921875</td>
+      <td>...</td>
+      <td>49.687500</td>
+      <td>46.03125</td>
+      <td>47.531250</td>
+      <td>38.687500</td>
+      <td>39.750000</td>
+      <td>39.31250</td>
+      <td>34.5000</td>
+      <td>51.71875</td>
+      <td>67.37500</td>
+      <td>45.281250</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 737 columns</p>
+</div></div>
+</div>
+<p>Optionally, save the accessibility matrix as a file.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>accessibility_matrix.to_pickle(&#39;accessibility_matrix.pickle&#39;)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="4.-City-model-initialization">
+<h2>4. City model initialization<a class="headerlink" href="#4.-City-model-initialization" title="Permalink to this heading"></a></h2>
+<p>Now with the resulting <strong>matrix</strong> and <strong>blocks layer</strong> we can initialize a city model.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from blocksnet import City
+
+blocks[&#39;land_use&#39;] = None
+
+vologda = City(
+  blocks=blocks,
+  acc_mx=accessibility_matrix,
+)
+</pre></div>
+</div>
+</div>
+<p>With <code class="docutils literal notranslate"><span class="pre">print</span></code> you can get information about: - local coordinate reference system; - the number of blocks in a city; - number of service types defined in the city (by default) types of city services (by default) and number of service types already loaded in the model; - number of buildings loaded in the model; - number of services loaded in the model.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(vologda)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+CRS : EPSG:32637
+Blocks : 737
+Service types : 0/66
+Buildings : 0
+Services : 0
+
+</pre></div></div>
+</div>
+<p>With this model, you can already perform basic analysis of urban environment. However, for more advanced analysis, information about existing services and buildings should be updated.</p>
+<p>At first, one should update city buildings layer, for some of the services will update the information about the capacity based on whether located or not inside of the building. Buildings spatial layer should contain the following columns:</p>
+<ul class="simple">
+<li><p><strong>index</strong> : <code class="docutils literal notranslate"><span class="pre">int</span></code> - unique building id</p></li>
+<li><p><strong>geometry</strong> : <code class="docutils literal notranslate"><span class="pre">Polygon</span></code> | MultiPolygon</p></li>
+<li><p><strong>build_floor_area</strong> : <code class="docutils literal notranslate"><span class="pre">float</span></code> &gt;= 0</p></li>
+<li><p><strong>living_area</strong> : <code class="docutils literal notranslate"><span class="pre">float</span></code> &gt;= 0</p></li>
+<li><p><strong>non_living_area</strong> : <code class="docutils literal notranslate"><span class="pre">float</span></code> &gt;= 0</p></li>
+<li><p><strong>footprint_area</strong> : <code class="docutils literal notranslate"><span class="pre">float</span></code> &gt;= 0</p></li>
+<li><p><strong>number_of_floors</strong> : <code class="docutils literal notranslate"><span class="pre">int</span></code> &gt;= 1</p></li>
+<li><p><strong>population</strong> : <code class="docutils literal notranslate"><span class="pre">int</span></code> &gt;= 0</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>buildings = gpd.read_parquet(os.path.join(data_path, &#39;buildings.parquet&#39;)).to_crs(local_crs)
+buildings.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>number_of_floors</th>
+      <th>is_living</th>
+      <th>footprint_area</th>
+      <th>build_floor_area</th>
+      <th>living_area</th>
+      <th>population</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>POLYGON ((551734.377 6561005.520, 551753.023 6...</td>
+      <td>2.0</td>
+      <td>False</td>
+      <td>3051.403190</td>
+      <td>6102.806380</td>
+      <td>0.000000</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>POLYGON ((551242.888 6561217.885, 551255.024 6...</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>947.828484</td>
+      <td>947.828484</td>
+      <td>0.000000</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>POLYGON ((551677.852 6560979.128, 551735.071 6...</td>
+      <td>5.0</td>
+      <td>True</td>
+      <td>643.583783</td>
+      <td>3217.918916</td>
+      <td>2574.335133</td>
+      <td>117</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>POLYGON ((551600.420 6561013.594, 551657.042 6...</td>
+      <td>1.0</td>
+      <td>True</td>
+      <td>682.649464</td>
+      <td>682.649464</td>
+      <td>0.000000</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>POLYGON ((550484.802 6569857.123, 550472.896 6...</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>230.815777</td>
+      <td>230.815777</td>
+      <td>0.000000</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Buildings that did not intersect any blocks will be returned from <code class="docutils literal notranslate"><span class="pre">update_buildings()</span></code> method.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>vologda.update_buildings(buildings)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2024-09-25 18:48:10.872</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.models.city</span>:<span class="ansi-cyan-fg">update_buildings</span>:<span class="ansi-cyan-fg">1237</span> - <span class="ansi-bold">Removing existing blocks from the model</span>
+<span class="ansi-green-fg">2024-09-25 18:48:10.877</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.models.city</span>:<span class="ansi-cyan-fg">update_buildings</span>:<span class="ansi-cyan-fg">1241</span> - <span class="ansi-bold">Joining buildings and blocks</span>
+<span class="ansi-green-fg">2024-09-25 18:48:14.410</span> | <span class="ansi-yellow-intense-fg ansi-bold">WARNING </span> | <span class="ansi-cyan-fg">blocksnet.models.city</span>:<span class="ansi-cyan-fg">update_buildings</span>:<span class="ansi-cyan-fg">1253</span> - <span class="ansi-yellow-intense-fg ansi-bold">2 buildings did not intersect any block</span>
+Update blocks buildings: 100%|██████████| 471/471 [00:03&lt;00:00, 148.27it/s]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>number_of_floors</th>
+      <th>is_living</th>
+      <th>footprint_area</th>
+      <th>build_floor_area</th>
+      <th>living_area</th>
+      <th>population</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>9781</th>
+      <td>POLYGON ((551681.237 6564001.208, 551661.600 6...</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>504.758281</td>
+      <td>504.758281</td>
+      <td>0.0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>16467</th>
+      <td>POLYGON ((551668.426 6563984.529, 551678.221 6...</td>
+      <td>1.0</td>
+      <td>False</td>
+      <td>463.814782</td>
+      <td>463.814782</td>
+      <td>0.0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>After the buildings spatial layer update, one must update the information about city services. In this example, we only update the information about schools and kindergartens, that are defined in the model by default by <code class="docutils literal notranslate"><span class="pre">school</span></code> and <code class="docutils literal notranslate"><span class="pre">kindergarten</span></code> unique keys.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>vologda[&#39;school&#39;]
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+ServiceType(code=&#39;3.5.1&#39;, name=&#39;school&#39;, accessibility=15, demand=120, land_use=[&lt;LandUse.RESIDENTIAL: &#39;residential&#39;&gt;, &lt;LandUse.BUSINESS: &#39;business&#39;&gt;], bricks=[ServiceBrick(capacity=250, area=3200.0, is_integrated=False, parking_area=0.0), ServiceBrick(capacity=300, area=4000.0, is_integrated=False, parking_area=0.0), ServiceBrick(capacity=600, area=8200.0, is_integrated=False, parking_area=0.0), ServiceBrick(capacity=1100, area=13000.0, is_integrated=False, parking_area=0.0), ServiceBrick(capacity=250, area=2200.0, is_integrated=True, parking_area=200.0), ServiceBrick(capacity=300, area=3600.0, is_integrated=True, parking_area=300.0), ServiceBrick(capacity=600, area=7100.0, is_integrated=True, parking_area=600.0)])
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>school = gpd.read_parquet(os.path.join(data_path, &#39;school.parquet&#39;)).to_crs(local_crs)
+kindergarten = gpd.read_parquet(os.path.join(data_path, &#39;kindergarten.parquet&#39;)).to_crs(local_crs)
+
+vologda.update_services(&#39;school&#39;, school)
+vologda.update_services(&#39;kindergarten&#39;, kindergarten)
+</pre></div>
+</div>
+</div>
+<p>As we don’t have an information about <code class="docutils literal notranslate"><span class="pre">LandUse</span></code>, we can try to predict it based on existing services in the model. But we need more information about located services than in this example.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from blocksnet import LandUsePrediction
+
+lup = LandUsePrediction(city_model=vologda)
+lu_blocks = lup.calculate()
+lu_blocks.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+100%|██████████| 737/737 [00:02&lt;00:00, 321.16it/s]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>land_use</th>
+    </tr>
+    <tr>
+      <th>id</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>POLYGON ((550762.290 6565038.844, 550768.857 6...</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>POLYGON ((550768.857 6565033.563, 550762.290 6...</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>POLYGON ((544937.479 6564706.592, 544935.619 6...</td>
+      <td>RESIDENTIAL</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>POLYGON ((544806.647 6565359.291, 544814.358 6...</td>
+      <td>None</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>POLYGON ((544793.346 6565395.228, 544800.150 6...</td>
+      <td>None</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>lup.plot(lu_blocks)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_pipeline_43_0.png" src="../_images/examples_pipeline_43_0.png" />
+</div>
+</div>
+<p>Update the information about <code class="docutils literal notranslate"><span class="pre">LandUse</span></code> in the model.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>vologda.update_land_use(lu_blocks)
+</pre></div>
+</div>
+</div>
+<p>Visualizing our model in few projections: - land use; - network accessibility; - buildings; - services.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>vologda.plot()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_pipeline_47_0.png" src="../_images/examples_pipeline_47_0.png" />
+</div>
+</div>
+</section>
+<section id="5.-Methods-for-urban-environment-analysis">
+<h2>5. Methods for urban environment analysis<a class="headerlink" href="#5.-Methods-for-urban-environment-analysis" title="Permalink to this heading"></a></h2>
+<section id="5.1.-Accessibility">
+<h3>5.1. Accessibility<a class="headerlink" href="#5.1.-Accessibility" title="Permalink to this heading"></a></h3>
+<p>With the <code class="docutils literal notranslate"><span class="pre">Accessibility</span></code> class, you can get a layer with information about block accessibility (relative to the chosen block).</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import random
+
+block = random.choice(vologda.blocks)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from blocksnet.method import Accessibility
+
+acc = Accessibility(city_model=vologda)
+acc_res = acc.calculate(block)
+acc_res.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>accessibility_to</th>
+      <th>accessibility_from</th>
+    </tr>
+    <tr>
+      <th>id</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>POLYGON ((550762.290 6565038.844, 550768.857 6...</td>
+      <td>47.15625</td>
+      <td>47.62500</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>POLYGON ((550768.857 6565033.563, 550762.290 6...</td>
+      <td>48.93750</td>
+      <td>49.15625</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>POLYGON ((544937.479 6564706.592, 544935.619 6...</td>
+      <td>92.31250</td>
+      <td>87.18750</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>POLYGON ((544806.647 6565359.291, 544814.358 6...</td>
+      <td>78.18750</td>
+      <td>80.93750</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>POLYGON ((544793.346 6565395.228, 544800.150 6...</td>
+      <td>72.87500</td>
+      <td>75.62500</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Visualizing the resulting accessibility <code class="docutils literal notranslate"><span class="pre">GeoDataFrame</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>acc.plot(acc_res, figsize=(10,5))
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_pipeline_54_0.png" src="../_images/examples_pipeline_54_0.png" />
+</div>
+</div>
+<p>You can also filter blocks that can potentially supply the chosen block with services of certain type.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>service_type = vologda[&#39;school&#39;]
+accessibility = service_type.accessibility
+accessibility
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+15
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>acc_res_st = acc_res[acc_res[&#39;accessibility_to&#39;]&lt;=accessibility]
+acc_res_st
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>accessibility_to</th>
+      <th>accessibility_from</th>
+    </tr>
+    <tr>
+      <th>id</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>491</th>
+      <td>POLYGON ((557733.822 6566501.805, 557716.377 6...</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>673</th>
+      <td>POLYGON ((557929.513 6566532.311, 557868.701 6...</td>
+      <td>9.039062</td>
+      <td>9.039062</td>
+    </tr>
+    <tr>
+      <th>674</th>
+      <td>POLYGON ((557988.145 6566536.245, 557929.513 6...</td>
+      <td>9.718750</td>
+      <td>9.718750</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>acc_res_st.plot(figsize=(10,10), column=&#39;accessibility_to&#39;).set_axis_off()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_pipeline_58_0.png" src="../_images/examples_pipeline_58_0.png" />
+</div>
+</div>
+<p>Saving the results to a <code class="docutils literal notranslate"><span class="pre">geojson</span></code> file</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>acc_res.to_file(&#39;accessibility.geojson&#39;)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="5.2.-Connectivity">
+<h3>5.2. Connectivity<a class="headerlink" href="#5.2.-Connectivity" title="Permalink to this heading"></a></h3>
+<p>Other methods are used in a similar way. Here is an example of blocks’ <strong>transport connectivity</strong> calculation using <code class="docutils literal notranslate"><span class="pre">Connectivity</span></code> class.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from blocksnet import Connectivity
+
+con = Connectivity(city_model=vologda)
+con_res = con.calculate()
+</pre></div>
+</div>
+</div>
+<p>Visualizating the connectivity result.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>con.plot(con_res)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_pipeline_65_0.png" src="../_images/examples_pipeline_65_0.png" />
+</div>
+</div>
+</section>
+<section id="5.3.-Service-Provision">
+<h3>5.3. Service Provision<a class="headerlink" href="#5.3.-Service-Provision" title="Permalink to this heading"></a></h3>
+<p>You can also assess service type provision for any block. Normative capacity and block population are used in assessment.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from blocksnet import Provision, ProvisionMethod
+
+prov = Provision(city_model=vologda)
+prov_res = prov.calculate(service_type)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2024-09-25 18:48:35.670</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">320</span> - <span class="ansi-bold">Setting an LP problem for accessibility = 15 : 192x37</span>
+<span class="ansi-green-fg">2024-09-25 18:48:35.780</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">354</span> - <span class="ansi-bold">Solving the problem</span>
+<span class="ansi-green-fg">2024-09-25 18:48:35.835</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">358</span> - <span class="ansi-bold">Restoring values from variables</span>
+<span class="ansi-green-fg">2024-09-25 18:48:35.937</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">320</span> - <span class="ansi-bold">Setting an LP problem for accessibility = 30 : 52x18</span>
+<span class="ansi-green-fg">2024-09-25 18:48:35.967</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">354</span> - <span class="ansi-bold">Solving the problem</span>
+<span class="ansi-green-fg">2024-09-25 18:48:35.988</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">358</span> - <span class="ansi-bold">Restoring values from variables</span>
+<span class="ansi-green-fg">2024-09-25 18:48:36.022</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">320</span> - <span class="ansi-bold">Setting an LP problem for accessibility = 60 : 26x4</span>
+<span class="ansi-green-fg">2024-09-25 18:48:36.028</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">354</span> - <span class="ansi-bold">Solving the problem</span>
+<span class="ansi-green-fg">2024-09-25 18:48:36.039</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">358</span> - <span class="ansi-bold">Restoring values from variables</span>
+<span class="ansi-green-fg">2024-09-25 18:48:36.053</span> | <span class="ansi-green-intense-fg ansi-bold">SUCCESS </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">calculate</span>:<span class="ansi-cyan-fg">269</span> - <span class="ansi-green-intense-fg ansi-bold">Provision assessment finished</span>
+</pre></div></div>
+</div>
+<p>Visualization of service provision.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>prov.plot(prov_res)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_pipeline_70_0.png" src="../_images/examples_pipeline_70_0.png" />
+</div>
+</div>
+<p>Save result to a file.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>prov_res.to_file(&#39;provision_gravity.geojson&#39;)
+</pre></div>
+</div>
+</div>
+<p>You can also use iterative greedy method of population distribution for provision assessment.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>prov_res_gr = prov.calculate(service_type, method=ProvisionMethod.GREEDY)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2024-09-25 18:49:14.785</span> | <span class="ansi-green-intense-fg ansi-bold">SUCCESS </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">calculate</span>:<span class="ansi-cyan-fg">269</span> - <span class="ansi-green-intense-fg ansi-bold">Provision assessment finished</span>
+</pre></div></div>
+</div>
+<p>Visualizating the result.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>prov.plot(prov_res_gr)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_pipeline_76_0.png" src="../_images/examples_pipeline_76_0.png" />
+</div>
+</div>
+<p>Getting statistical parameters of provision.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>Provision.stat(prov_res_gr)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;mean&#39;: 0.8027122468957005, &#39;median&#39;: 1.0, &#39;min&#39;: 0.0, &#39;max&#39;: 1.0}
+</pre></div></div>
+</div>
+<p>Getting city-wide provision estimate.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>Provision.total(prov_res_gr)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0.5132829977628636
+</pre></div></div>
+</div>
+<p>Saving results to a file.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>prov_res_gr.to_file(&#39;provision_greedy.geojson&#39;)
+</pre></div>
+</div>
+</div>
+<p>You can modify parameters of any block and perform provision assessment again. Let’s take a block with <strong>id=110</strong> and increase its population by 1000 people.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[41]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pandas as pd
+update = {
+  110: {
+    &#39;population&#39;: 1000,
+  }
+}
+update_df = pd.DataFrame.from_dict(update, orient=&#39;index&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[42]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>prov_res_after = prov.calculate(service_type, update_df)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2024-09-25 18:49:16.556</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">320</span> - <span class="ansi-bold">Setting an LP problem for accessibility = 15 : 193x37</span>
+<span class="ansi-green-fg">2024-09-25 18:49:16.662</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">354</span> - <span class="ansi-bold">Solving the problem</span>
+<span class="ansi-green-fg">2024-09-25 18:49:16.701</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">358</span> - <span class="ansi-bold">Restoring values from variables</span>
+<span class="ansi-green-fg">2024-09-25 18:49:16.820</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">320</span> - <span class="ansi-bold">Setting an LP problem for accessibility = 30 : 53x18</span>
+<span class="ansi-green-fg">2024-09-25 18:49:16.853</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">354</span> - <span class="ansi-bold">Solving the problem</span>
+<span class="ansi-green-fg">2024-09-25 18:49:16.876</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">358</span> - <span class="ansi-bold">Restoring values from variables</span>
+<span class="ansi-green-fg">2024-09-25 18:49:16.910</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">320</span> - <span class="ansi-bold">Setting an LP problem for accessibility = 60 : 27x4</span>
+<span class="ansi-green-fg">2024-09-25 18:49:16.917</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">354</span> - <span class="ansi-bold">Solving the problem</span>
+<span class="ansi-green-fg">2024-09-25 18:49:16.929</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">358</span> - <span class="ansi-bold">Restoring values from variables</span>
+<span class="ansi-green-fg">2024-09-25 18:49:16.946</span> | <span class="ansi-green-intense-fg ansi-bold">SUCCESS </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">calculate</span>:<span class="ansi-cyan-fg">269</span> - <span class="ansi-green-intense-fg ansi-bold">Provision assessment finished</span>
+</pre></div></div>
+</div>
+<p>Visualization of provision after modification of block parameters.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[43]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>prov.plot(prov_res_after)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_pipeline_87_0.png" src="../_images/examples_pipeline_87_0.png" />
+</div>
+</div>
+<p>Saving the results as a <code class="docutils literal notranslate"><span class="pre">geojson</span></code> file.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[44]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>prov_res_after.to_file(&#39;provision_update.geojson&#39;)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="5.4.-Services-composition-optimization">
+<h3>5.4. Services composition optimization<a class="headerlink" href="#5.4.-Services-composition-optimization" title="Permalink to this heading"></a></h3>
+<p>Selecting the scenario (concept) of city development includes specifiying weights for each of the service types.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[45]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>scenario = {
+    &#39;school&#39;: 0.6,
+    &#39;kindergarten&#39;: 0.4
+}
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>blocks = vologda.get_blocks_gdf(simplify=True)
+blocks.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[46]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>land_use</th>
+      <th>is_living</th>
+      <th>build_floor_area</th>
+      <th>living_demand</th>
+      <th>living_area</th>
+      <th>share_living</th>
+      <th>business_area</th>
+      <th>share_business</th>
+      <th>site_area</th>
+      <th>population</th>
+      <th>footprint_area</th>
+      <th>fsi</th>
+      <th>gsi</th>
+      <th>l</th>
+      <th>osr</th>
+      <th>mxi</th>
+    </tr>
+    <tr>
+      <th>id</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>POLYGON ((550762.290 6565038.844, 550768.857 6...</td>
+      <td>None</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>NaN</td>
+      <td>0.000000</td>
+      <td>NaN</td>
+      <td>0.000000</td>
+      <td>NaN</td>
+      <td>1.050029e+03</td>
+      <td>0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>POLYGON ((550768.857 6565033.563, 550762.290 6...</td>
+      <td>None</td>
+      <td>False</td>
+      <td>0.000000</td>
+      <td>NaN</td>
+      <td>0.000000</td>
+      <td>NaN</td>
+      <td>0.000000</td>
+      <td>NaN</td>
+      <td>3.423072e+03</td>
+      <td>0</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>POLYGON ((544937.479 6564706.592, 544935.619 6...</td>
+      <td>residential</td>
+      <td>True</td>
+      <td>541366.098806</td>
+      <td>22.056246</td>
+      <td>94819.799728</td>
+      <td>0.221511</td>
+      <td>446546.299077</td>
+      <td>1.043187</td>
+      <td>5.013304e+06</td>
+      <td>4299</td>
+      <td>428059.648861</td>
+      <td>0.107986</td>
+      <td>0.085385</td>
+      <td>1.264698</td>
+      <td>8.469765</td>
+      <td>0.175149</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>POLYGON ((544806.647 6565359.291, 544814.358 6...</td>
+      <td>None</td>
+      <td>False</td>
+      <td>3599.332605</td>
+      <td>NaN</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>3599.332605</td>
+      <td>1.000000</td>
+      <td>1.706084e+05</td>
+      <td>0</td>
+      <td>3599.332605</td>
+      <td>0.021097</td>
+      <td>0.021097</td>
+      <td>1.000000</td>
+      <td>46.400012</td>
+      <td>0.000000</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>POLYGON ((544793.346 6565395.228, 544800.150 6...</td>
+      <td>None</td>
+      <td>False</td>
+      <td>3204.576494</td>
+      <td>NaN</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>3204.576494</td>
+      <td>1.000000</td>
+      <td>4.019534e+04</td>
+      <td>0</td>
+      <td>3204.576494</td>
+      <td>0.079725</td>
+      <td>0.079725</td>
+      <td>1.000000</td>
+      <td>11.543104</td>
+      <td>0.000000</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[47]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from blocksnet import LandUse
+
+blocks_fsi = blocks.fsi
+blocks_gsi = blocks.gsi
+blocks_lu = blocks.apply(lambda s : (LandUse.RESIDENTIAL if s.is_living else LandUse.RECREATION) if s.land_use is None else s.land_use, axis=1).apply(LandUse).to_dict()
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[48]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from blocksnet import AnnealingOptimizer
+
+ao = AnnealingOptimizer(city_model=vologda)
+X, indicators, value, provisions = ao.calculate(blocks_lu, blocks_fsi, blocks_gsi, scenario)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Value : 0.815:  55%|█████▌    | 550/1000 [02:10&lt;01:47,  4.20it/s]
+</pre></div></div>
+</div>
+<p>As you can see, the method have “placed” some services as if we didn’t have any services already to increase the provision.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>provisions
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[49]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;school&#39;: 0.8472210572229025, &#39;kindergarten&#39;: 0.7675453047775948}
+</pre></div></div>
+</div>
+<p>Visualizing possible school capacities</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[50]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ao.to_gdf(X, indicators).plot(column=&#39;school&#39;, cmap=&#39;RdYlGn&#39;, figsize=(10,5), legend=True).set_axis_off()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_pipeline_99_0.png" src="../_images/examples_pipeline_99_0.png" />
+</div>
+</div>
+<p>Output of the exact requirements:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ao.to_bricks_df(X)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[51]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>block_id</th>
+      <th>service_type</th>
+      <th>is_integrated</th>
+      <th>area</th>
+      <th>capacity</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2</td>
+      <td>school</td>
+      <td>False</td>
+      <td>3200.0</td>
+      <td>250</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2</td>
+      <td>school</td>
+      <td>False</td>
+      <td>13000.0</td>
+      <td>1100</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>24</th>
+      <td>13</td>
+      <td>kindergarten</td>
+      <td>True</td>
+      <td>320.0</td>
+      <td>180</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>27</th>
+      <td>19</td>
+      <td>school</td>
+      <td>False</td>
+      <td>4000.0</td>
+      <td>300</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>29</th>
+      <td>19</td>
+      <td>school</td>
+      <td>False</td>
+      <td>13000.0</td>
+      <td>1100</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>2585</th>
+      <td>590</td>
+      <td>kindergarten</td>
+      <td>True</td>
+      <td>320.0</td>
+      <td>180</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2629</th>
+      <td>623</td>
+      <td>school</td>
+      <td>False</td>
+      <td>13000.0</td>
+      <td>1100</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <th>2630</th>
+      <td>623</td>
+      <td>school</td>
+      <td>True</td>
+      <td>2200.0</td>
+      <td>250</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2637</th>
+      <td>623</td>
+      <td>kindergarten</td>
+      <td>True</td>
+      <td>320.0</td>
+      <td>180</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2661</th>
+      <td>660</td>
+      <td>kindergarten</td>
+      <td>False</td>
+      <td>700.0</td>
+      <td>320</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+<p>201 rows × 6 columns</p>
+</div></div>
+</div>
+<p>To calculate and visualize the provision one must make an <code class="docutils literal notranslate"><span class="pre">update_df</span></code> again. At first, get <code class="docutils literal notranslate"><span class="pre">clear_df</span></code>, that “removes” everything from the city for the <code class="docutils literal notranslate"><span class="pre">Provision</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>clear_df = ao._get_clear_df(vologda._blocks.keys())
+clear_df.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[52]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>population</th>
+      <th>kindergarten</th>
+      <th>school</th>
+      <th>hospital</th>
+      <th>polyclinic</th>
+      <th>pitch</th>
+      <th>swimming_pool</th>
+      <th>stadium</th>
+      <th>theatre</th>
+      <th>museum</th>
+      <th>...</th>
+      <th>bus_station</th>
+      <th>bus_stop</th>
+      <th>pier</th>
+      <th>animal_shelter</th>
+      <th>military_kom</th>
+      <th>prison</th>
+      <th>landfill</th>
+      <th>plant_nursery</th>
+      <th>greenhouse_complex</th>
+      <th>warehouse</th>
+    </tr>
+    <tr>
+      <th>id</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>-0.0</td>
+      <td>-0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0</td>
+      <td>-0.0</td>
+      <td>-0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>-4299</td>
+      <td>-640.0</td>
+      <td>-0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0</td>
+      <td>-0.0</td>
+      <td>-0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0</td>
+      <td>-0.0</td>
+      <td>-0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 67 columns</p>
+</div></div>
+</div>
+<p>Get the <code class="docutils literal notranslate"><span class="pre">df</span></code> with values obtained by the optimizer.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>df = ao.to_df(X, indicators)
+df.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[53]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>population</th>
+      <th>school</th>
+      <th>kindergarten</th>
+    </tr>
+    <tr>
+      <th>block_id</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2</th>
+      <td>5665</td>
+      <td>1350.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>1160</td>
+      <td>0.0</td>
+      <td>180.0</td>
+    </tr>
+    <tr>
+      <th>19</th>
+      <td>1482</td>
+      <td>1400.0</td>
+      <td>320.0</td>
+    </tr>
+    <tr>
+      <th>23</th>
+      <td>587</td>
+      <td>300.0</td>
+      <td>320.0</td>
+    </tr>
+    <tr>
+      <th>32</th>
+      <td>3934</td>
+      <td>0.0</td>
+      <td>80.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Sum everything to get the actual state.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[54]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>clear_df[&#39;population&#39;] += df[&#39;population&#39;]
+clear_df[&#39;school&#39;] += df[&#39;school&#39;]
+clear_df[&#39;kindergarten&#39;] += df[&#39;kindergarten&#39;]
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[55]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>prov_ann = prov.calculate(&#39;school&#39;, clear_df)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-green-fg">2024-09-25 18:51:31.002</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">320</span> - <span class="ansi-bold">Setting an LP problem for accessibility = 15 : 203x104</span>
+<span class="ansi-green-fg">2024-09-25 18:51:31.313</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">354</span> - <span class="ansi-bold">Solving the problem</span>
+<span class="ansi-green-fg">2024-09-25 18:51:31.400</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">358</span> - <span class="ansi-bold">Restoring values from variables</span>
+<span class="ansi-green-fg">2024-09-25 18:51:31.567</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">320</span> - <span class="ansi-bold">Setting an LP problem for accessibility = 30 : 26x51</span>
+<span class="ansi-green-fg">2024-09-25 18:51:31.602</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">354</span> - <span class="ansi-bold">Solving the problem</span>
+<span class="ansi-green-fg">2024-09-25 18:51:31.624</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">358</span> - <span class="ansi-bold">Restoring values from variables</span>
+<span class="ansi-green-fg">2024-09-25 18:51:31.652</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">320</span> - <span class="ansi-bold">Setting an LP problem for accessibility = 60 : 2x42</span>
+<span class="ansi-green-fg">2024-09-25 18:51:31.657</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">354</span> - <span class="ansi-bold">Solving the problem</span>
+<span class="ansi-green-fg">2024-09-25 18:51:31.666</span> | <span class="ansi-bold">INFO    </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">_lp_provision</span>:<span class="ansi-cyan-fg">358</span> - <span class="ansi-bold">Restoring values from variables</span>
+<span class="ansi-green-fg">2024-09-25 18:51:31.675</span> | <span class="ansi-green-intense-fg ansi-bold">SUCCESS </span> | <span class="ansi-cyan-fg">blocksnet.method.provision</span>:<span class="ansi-cyan-fg">calculate</span>:<span class="ansi-cyan-fg">269</span> - <span class="ansi-green-intense-fg ansi-bold">Provision assessment finished</span>
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[56]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>prov_ann.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[56]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>geometry</th>
+      <th>demand</th>
+      <th>capacity</th>
+      <th>capacity_left</th>
+      <th>demand_left</th>
+      <th>demand_within</th>
+      <th>demand_without</th>
+      <th>provision</th>
+    </tr>
+    <tr>
+      <th>id</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>POLYGON ((550762.290 6565038.844, 550768.857 6...</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>POLYGON ((550768.857 6565033.563, 550762.290 6...</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>POLYGON ((544937.479 6564706.592, 544935.619 6...</td>
+      <td>680</td>
+      <td>1350.0</td>
+      <td>670.0</td>
+      <td>0</td>
+      <td>680</td>
+      <td>0</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>POLYGON ((544806.647 6565359.291, 544814.358 6...</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>POLYGON ((544793.346 6565395.228, 544800.150 6...</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[57]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>prov.plot(prov_ann)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_pipeline_110_0.png" src="../_images/examples_pipeline_110_0.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="blocks_generator.html" class="btn btn-neutral float-right" title="City blocks layer generating" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023-2024, IDU.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

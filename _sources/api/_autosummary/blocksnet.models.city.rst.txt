@@ -1,0 +1,34 @@
+blocksnet.models.city
+=====================
+
+.. automodule:: blocksnet.models.city
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Block
+      BlockService
+      Building
+      BuildingService
+      City
+      Service
+   
+   
+
+   
+   
+   
+
+
+

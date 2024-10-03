@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Land Use Optimization &mdash; BlocksNet 0.0.11 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/nbsphinx-code-cells.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="API documentation" href="../../api/index.html" />
+    <link rel="prev" title="Cases" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            BlocksNet
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../blocksnet/index.html">BlocksNet</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../pipeline.html">Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../blocks_generator.html">City blocks layer generating</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../accessibility_processor.html">Generating intermodal graph and calculating accessibility matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../city.html">City initialization and methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../methods/index.html">Methods</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Cases</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Land Use Optimization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Optimizing-land-uses">Optimizing land uses</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Services-optimizer">Services optimizer</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about_us.html">About us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BlocksNet</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Examples</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Cases</a></li>
+      <li class="breadcrumb-item active">Land Use Optimization</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/examples/cases/land_use_optimization.nblink.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Land-Use-Optimization">
+<h1>Land Use Optimization<a class="headerlink" href="#Land-Use-Optimization" title="Permalink to this heading"></a></h1>
+<ul class="simple">
+<li><p>There is a set of urban blocks in a relatively small area.</p></li>
+<li><p>The task is to to determine the optimal layout of functional zones.</p></li>
+<li><p>Also it is necessary to identify the possible optimal composition of services for this area.</p></li>
+</ul>
+<section id="Optimizing-land-uses">
+<h2>Optimizing land uses<a class="headerlink" href="#Optimizing-land-uses" title="Permalink to this heading"></a></h2>
+<p>Load blocks spatial data and visualize it.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import geopandas as gpd
+
+blocks_gdf = gpd.read_file(&#39;../blocks.geojson&#39;)[[&#39;geometry&#39;]]
+blocks_gdf.geometry = blocks_gdf.buffer(-0.5)
+blocks_gdf = gpd.GeoDataFrame(blocks_gdf.geometry.explode(True)).reset_index(drop=True)
+blocks_gdf.plot().set_axis_off()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_cases_land_use_optimization_2_0.png" src="../../_images/examples_cases_land_use_optimization_2_0.png" />
+</div>
+</div>
+<p>Initializing <code class="docutils literal notranslate"><span class="pre">LandUseOptimizer</span></code> instance. After initializing the loaded blocks will also be cut to fit possible aspect ratios.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from blocksnet.preprocessing import LandUseOptimizer
+
+luo = LandUseOptimizer(blocks_gdf)
+luo.blocks.plot().set_axis_off()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<script type="text/javascript">
+<!--
+
+{
+        var element = document.getElementById('NetworKit_script');
+        if (element) {
+                element.parentNode.removeChild(element);
+        }
+        element = document.createElement('script');
+        element.type = 'text/javascript';
+        element.innerHTML = 'function NetworKit_pageEmbed(id) { var i, j; var elements; elements = document.getElementById(id).getElementsByClassName("Plot"); for (i=0; i<elements.length; i++) { elements[i].id = id + "_Plot_" + i; var data = elements[i].getAttribute("data-image").split("|"); elements[i].removeAttribute("data-image"); var content = "<div class=\\"Image\\" id=\\"" + elements[i].id + "_Image\\" />"; elements[i].innerHTML = content; elements[i].setAttribute("data-image-index", 0); elements[i].setAttribute("data-image-length", data.length); for (j=0; j<data.length; j++) { elements[i].setAttribute("data-image-" + j, data[j]); } NetworKit_plotUpdate(elements[i]); elements[i].onclick = function (e) { NetworKit_overlayShow((e.target) ? e.target : e.srcElement); } } elements = document.getElementById(id).getElementsByClassName("HeatCell"); for (i=0; i<elements.length; i++) { var data = parseFloat(elements[i].getAttribute("data-heat")); var color = "#00FF00"; if (data <= 1 && data > 0) { color = "hsla(0, 100%, 75%, " + (data) + ")"; } else if (data <= 0 && data >= -1) { color = "hsla(240, 100%, 75%, " + (-data) + ")"; } elements[i].style.backgroundColor = color; } elements = document.getElementById(id).getElementsByClassName("Details"); for (i=0; i<elements.length; i++) { elements[i].setAttribute("data-title", "-"); NetworKit_toggleDetails(elements[i]); elements[i].onclick = function (e) { NetworKit_toggleDetails((e.target) ? e.target : e.srcElement); } } elements = document.getElementById(id).getElementsByClassName("MathValue"); for (i=elements.length-1; i>=0; i--) { value = elements[i].innerHTML.trim(); if (value === "nan") { elements[i].parentNode.innerHTML = "" } } elements = document.getElementById(id).getElementsByClassName("SubCategory"); for (i=elements.length-1; i>=0; i--) { value = elements[i].innerHTML.trim(); if (value === "") { elements[i].parentNode.removeChild(elements[i]) } } elements = document.getElementById(id).getElementsByClassName("Category"); for (i=elements.length-1; i>=0; i--) { value = elements[i].innerHTML.trim(); if (value === "") { elements[i].parentNode.removeChild(elements[i]) } } var isFirefox = false; try { isFirefox = typeof InstallTrigger !== "undefined"; } catch (e) {} if (!isFirefox) { alert("Currently the function\'s output is only fully supported by Firefox."); } } function NetworKit_plotUpdate(source) { var index = source.getAttribute("data-image-index"); var data = source.getAttribute("data-image-" + index); var image = document.getElementById(source.id + "_Image"); image.style.backgroundImage = "url(" + data + ")"; } function NetworKit_showElement(id, show) { var element = document.getElementById(id); element.style.display = (show) ? "block" : "none"; } function NetworKit_overlayShow(source) { NetworKit_overlayUpdate(source); NetworKit_showElement("NetworKit_Overlay", true); } function NetworKit_overlayUpdate(source) { document.getElementById("NetworKit_Overlay_Title").innerHTML = source.title; var index = source.getAttribute("data-image-index"); var data = source.getAttribute("data-image-" + index); var image = document.getElementById("NetworKit_Overlay_Image"); image.setAttribute("data-id", source.id); image.style.backgroundImage = "url(" + data + ")"; var link = document.getElementById("NetworKit_Overlay_Toolbar_Bottom_Save"); link.href = data; link.download = source.title + ".svg"; } function NetworKit_overlayImageShift(delta) { var image = document.getElementById("NetworKit_Overlay_Image"); var source = document.getElementById(image.getAttribute("data-id")); var index = parseInt(source.getAttribute("data-image-index")); var length = parseInt(source.getAttribute("data-image-length")); var index = (index+delta) % length; if (index < 0) { index = length + index; } source.setAttribute("data-image-index", index); NetworKit_overlayUpdate(source); } function NetworKit_toggleDetails(source) { var childs = source.children; var show = false; if (source.getAttribute("data-title") == "-") { source.setAttribute("data-title", "+"); show = false; } else { source.setAttribute("data-title", "-"); show = true; } for (i=0; i<childs.length; i++) { if (show) { childs[i].style.display = "block"; } else { childs[i].style.display = "none"; } } }';
+        element.setAttribute('id', 'NetworKit_script');
+        document.head.appendChild(element);
+}
+
+
+{
+        var element = document.getElementById('NetworKit_style');
+        if (element) {
+                element.parentNode.removeChild(element);
+        }
+        element = document.createElement('style');
+        element.type = 'text/css';
+        element.innerHTML = '.NetworKit_Page { font-family: Arial, Helvetica, sans-serif; font-size: 14px; } .NetworKit_Page .Value:before { font-family: Arial, Helvetica, sans-serif; font-size: 1.05em; content: attr(data-title) ":"; margin-left: -2.5em; padding-right: 0.5em; } .NetworKit_Page .Details .Value:before { display: block; } .NetworKit_Page .Value { font-family: monospace; white-space: pre; padding-left: 2.5em; white-space: -moz-pre-wrap !important; white-space: -pre-wrap; white-space: -o-pre-wrap; white-space: pre-wrap; word-wrap: break-word; tab-size: 4; -moz-tab-size: 4; } .NetworKit_Page .Category { clear: both; padding-left: 1em; margin-bottom: 1.5em; } .NetworKit_Page .Category:before { content: attr(data-title); font-size: 1.75em; display: block; margin-left: -0.8em; margin-bottom: 0.5em; } .NetworKit_Page .SubCategory { margin-bottom: 1.5em; padding-left: 1em; } .NetworKit_Page .SubCategory:before { font-size: 1.6em; display: block; margin-left: -0.8em; margin-bottom: 0.5em; } .NetworKit_Page .SubCategory[data-title]:before { content: attr(data-title); } .NetworKit_Page .Block { display: block; } .NetworKit_Page .Block:after { content: "."; visibility: hidden; display: block; height: 0; clear: both; } .NetworKit_Page .Block .Thumbnail_Overview, .NetworKit_Page .Block .Thumbnail_ScatterPlot { width: 260px; float: left; } .NetworKit_Page .Block .Thumbnail_Overview img, .NetworKit_Page .Block .Thumbnail_ScatterPlot img { width: 260px; } .NetworKit_Page .Block .Thumbnail_Overview:before, .NetworKit_Page .Block .Thumbnail_ScatterPlot:before { display: block; text-align: center; font-weight: bold; } .NetworKit_Page .Block .Thumbnail_Overview:before { content: attr(data-title); } .NetworKit_Page .HeatCell { font-family: "Courier New", Courier, monospace; cursor: pointer; } .NetworKit_Page .HeatCell, .NetworKit_Page .HeatCellName { display: inline; padding: 0.1em; margin-right: 2px; background-color: #FFFFFF } .NetworKit_Page .HeatCellName { margin-left: 0.25em; } .NetworKit_Page .HeatCell:before { content: attr(data-heat); display: inline-block; color: #000000; width: 4em; text-align: center; } .NetworKit_Page .Measure { clear: both; } .NetworKit_Page .Measure .Details { cursor: pointer; } .NetworKit_Page .Measure .Details:before { content: "[" attr(data-title) "]"; display: block; } .NetworKit_Page .Measure .Details .Value { border-left: 1px dotted black; margin-left: 0.4em; padding-left: 3.5em; pointer-events: none; } .NetworKit_Page .Measure .Details .Spacer:before { content: "."; opacity: 0.0; pointer-events: none; } .NetworKit_Page .Measure .Plot { width: 440px; height: 440px; cursor: pointer; float: left; margin-left: -0.9em; margin-right: 20px; } .NetworKit_Page .Measure .Plot .Image { background-repeat: no-repeat; background-position: center center; background-size: contain; height: 100%; pointer-events: none; } .NetworKit_Page .Measure .Stat { width: 500px; float: left; } .NetworKit_Page .Measure .Stat .Group { padding-left: 1.25em; margin-bottom: 0.75em; } .NetworKit_Page .Measure .Stat .Group .Title { font-size: 1.1em; display: block; margin-bottom: 0.3em; margin-left: -0.75em; border-right-style: dotted; border-right-width: 1px; border-bottom-style: dotted; border-bottom-width: 1px; background-color: #D0D0D0; padding-left: 0.2em; } .NetworKit_Page .Measure .Stat .Group .List { -webkit-column-count: 3; -moz-column-count: 3; column-count: 3; } .NetworKit_Page .Measure .Stat .Group .List .Entry { position: relative; line-height: 1.75em; } .NetworKit_Page .Measure .Stat .Group .List .Entry[data-tooltip]:before { position: absolute; left: 0; top: -40px; background-color: #808080; color: #ffffff; height: 30px; line-height: 30px; border-radius: 5px; padding: 0 15px; content: attr(data-tooltip); white-space: nowrap; display: none; } .NetworKit_Page .Measure .Stat .Group .List .Entry[data-tooltip]:after { position: absolute; left: 15px; top: -10px; border-top: 7px solid #808080; border-left: 7px solid transparent; border-right: 7px solid transparent; content: ""; display: none; } .NetworKit_Page .Measure .Stat .Group .List .Entry[data-tooltip]:hover:after, .NetworKit_Page .Measure .Stat .Group .List .Entry[data-tooltip]:hover:before { display: block; } .NetworKit_Page .Measure .Stat .Group .List .Entry .MathValue { font-family: "Courier New", Courier, monospace; } .NetworKit_Page .Measure:after { content: "."; visibility: hidden; display: block; height: 0; clear: both; } .NetworKit_Page .PartitionPie { clear: both; } .NetworKit_Page .PartitionPie img { width: 600px; } #NetworKit_Overlay { left: 0px; top: 0px; display: none; position: absolute; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 1000; } #NetworKit_Overlay_Title { position: absolute; color: white; transform: rotate(-90deg); width: 32em; height: 32em; padding-right: 0.5em; padding-top: 0.5em; text-align: right; font-size: 40px; } #NetworKit_Overlay .button { background: white; cursor: pointer; } #NetworKit_Overlay .button:before { size: 13px; display: inline-block; text-align: center; margin-top: 0.5em; margin-bottom: 0.5em; width: 1.5em; height: 1.5em; } #NetworKit_Overlay .icon-close:before { content: "X"; } #NetworKit_Overlay .icon-previous:before { content: "P"; } #NetworKit_Overlay .icon-next:before { content: "N"; } #NetworKit_Overlay .icon-save:before { content: "S"; } #NetworKit_Overlay_Toolbar_Top, #NetworKit_Overlay_Toolbar_Bottom { position: absolute; width: 40px; right: 13px; text-align: right; z-index: 1100; } #NetworKit_Overlay_Toolbar_Top { top: 0.5em; } #NetworKit_Overlay_Toolbar_Bottom { Bottom: 0.5em; } #NetworKit_Overlay_ImageContainer { position: absolute; top: 5%; left: 5%; height: 90%; width: 90%; background-repeat: no-repeat; background-position: center center; background-size: contain; } #NetworKit_Overlay_Image { height: 100%; width: 100%; background-repeat: no-repeat; background-position: center center; background-size: contain; }';
+        element.setAttribute('id', 'NetworKit_style');
+        document.head.appendChild(element);
+}
+
+
+{
+        var element = document.getElementById('NetworKit_Overlay');
+        if (element) {
+                element.parentNode.removeChild(element);
+        }
+        element = document.createElement('div');
+        element.innerHTML = '<div id="NetworKit_Overlay_Toolbar_Top"><div class="button icon-close" id="NetworKit_Overlay_Close" /></div><div id="NetworKit_Overlay_Title" /> <div id="NetworKit_Overlay_ImageContainer"> <div id="NetworKit_Overlay_Image" /> </div> <div id="NetworKit_Overlay_Toolbar_Bottom"> <div class="button icon-previous" onclick="NetworKit_overlayImageShift(-1)" /> <div class="button icon-next" onclick="NetworKit_overlayImageShift(1)" /> <a id="NetworKit_Overlay_Toolbar_Bottom_Save"><div class="button icon-save" /></a> </div>';
+        element.setAttribute('id', 'NetworKit_Overlay');
+        document.body.appendChild(element);
+        document.getElementById('NetworKit_Overlay_Close').onclick = function (e) {
+                document.getElementById('NetworKit_Overlay').style.display = 'none';
+        }
+}
+
+-->
+</script></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_cases_land_use_optimization_4_1.png" src="../../_images/examples_cases_land_use_optimization_4_1.png" />
+</div>
+</div>
+<p>Determine desired <strong>Land Use</strong> shares. The optimizer will try to fit these shares using MSE.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from blocksnet import LandUse
+
+lu_shares = {
+  LandUse.RESIDENTIAL: 0.3,
+  LandUse.BUSINESS: 0.2,
+  LandUse.RECREATION: 0.2,
+  LandUse.SPECIAL: 0.05,
+  LandUse.INDUSTRIAL: 0.05,
+  LandUse.AGRICULTURE: 0.1,
+  LandUse.TRANSPORT: 0.1
+}
+</pre></div>
+</div>
+</div>
+<p>Run <code class="docutils literal notranslate"><span class="pre">LandUseOptimizer</span></code> instance calculation method <code class="docutils literal notranslate"><span class="pre">run()</span></code>. It will return the following result: - <code class="docutils literal notranslate"><span class="pre">best_X</span></code> - best variables found in the simulated annealing process. - <code class="docutils literal notranslate"><span class="pre">best_value</span></code> - best fit value (the smaller it is, the closer optimization was to the desired shares). - <code class="docutils literal notranslate"><span class="pre">Xs</span></code> - list of X during all the iterations. - <code class="docutils literal notranslate"><span class="pre">values</span></code> - list of fit values during all the iterations.</p>
+<p>The optimizer will try to fit desired shares according to rules: - Some land uses can’t be adjacent to others (like residential and industrial). - Some land uses have max ratio possible. For example, residential blocks will vary from 1:1 to 1:3.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>best_X, best_value, Xs, values = luo.run(lu_shares, rate=0.999, max_iter=100_000)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Value : 0.004:  20%|██        | 20255/100000 [02:11&lt;08:38, 153.88it/s]
+</pre></div></div>
+</div>
+<p>After the method found some result, we can visualize the flow of fit value to see how it changed.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import matplotlib.pyplot as plt
+
+plt.plot(values)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&lt;matplotlib.lines.Line2D at 0x7f4a015973a0&gt;]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_cases_land_use_optimization_10_1.png" src="../../_images/examples_cases_land_use_optimization_10_1.png" />
+</div>
+</div>
+<p>As we can see, it successfully found some kind of value close to <code class="docutils literal notranslate"><span class="pre">0.0</span></code>. Otherwise we could adjust rate, temperature, or iterations of the optimizer.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>best_value
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0.001998457049778621
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>luo.to_shares_dict(best_X)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&lt;LandUse.RESIDENTIAL: &#39;residential&#39;&gt;: 0.26136152081823005,
+ &lt;LandUse.BUSINESS: &#39;business&#39;&gt;: 0.2084201382217867,
+ &lt;LandUse.RECREATION: &#39;recreation&#39;&gt;: 0.19428657048692446,
+ &lt;LandUse.SPECIAL: &#39;special&#39;&gt;: 0.055519879096642556,
+ &lt;LandUse.INDUSTRIAL: &#39;industrial&#39;&gt;: 0.06251407231282412,
+ &lt;LandUse.AGRICULTURE: &#39;agriculture&#39;&gt;: 0.10371699128343877,
+ &lt;LandUse.TRANSPORT: &#39;transport&#39;&gt;: 0.11418082778015352}
+</pre></div></div>
+</div>
+<p>Let’s see how proportions of desired Land Uses changed.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import pandas as pd
+
+df = pd.DataFrame([{lu.value : share for lu,share in luo.to_shares_dict(X).items()} for X in Xs])
+df.plot(kind=&#39;area&#39;, stacked=True, figsize=(10,10))
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Axes: &gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_cases_land_use_optimization_15_1.png" src="../../_images/examples_cases_land_use_optimization_15_1.png" />
+</div>
+</div>
+<p>Finally, visualize the result. As we can see, residential blocks mostly locate at the periphery.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>luo.to_gdf(best_X).plot(column=&#39;land_use&#39;, legend=True, figsize=(10,10)).set_axis_off()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_cases_land_use_optimization_17_0.png" src="../../_images/examples_cases_land_use_optimization_17_0.png" />
+</div>
+</div>
+</section>
+<section id="Services-optimizer">
+<h2>Services optimizer<a class="headerlink" href="#Services-optimizer" title="Permalink to this heading"></a></h2>
+<p>We have to find optimal services composition for this land use set.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import networkx as nx
+from blocksnet import AccessibilityProcessor
+from shapely import length, LineString, Point
+
+SPEED = 10 * 1000 / 60
+
+graph = luo.adjacency_graph.copy()
+graph.graph[&#39;crs&#39;] = luo.blocks.crs.to_epsg()
+for node, data in graph.nodes(data=True):
+  point = luo.blocks.loc[node,&#39;geometry&#39;].representative_point()
+  data[&#39;geometry&#39;] = point
+  data[&#39;x&#39;] = point.x
+  data[&#39;y&#39;] = point.y
+for u, v, data in graph.edges(data=True):
+  point_u = graph.nodes[u][&#39;geometry&#39;]
+  point_v = graph.nodes[v][&#39;geometry&#39;]
+  line_string = LineString([point_u, point_v])
+  data[&#39;time_min&#39;] = length(line_string)/SPEED
+
+ap = AccessibilityProcessor(luo.blocks)
+acc_mx = ap.get_accessibility_matrix(graph)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from blocksnet import City
+
+city = City(luo.to_gdf(best_X), acc_mx)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from blocksnet.method.annealing_optimizer import AnnealingOptimizer, LU_FSIS, LU_GSIS
+
+blocks_lu = {block.id : best_X[block.id] for block in city.blocks}
+blocks_fsi = {b_id : LU_FSIS[lu][0] for b_id, lu in blocks_lu.items()}
+blocks_gsi = {b_id : LU_GSIS[lu][0] for b_id, lu in blocks_lu.items()}
+service_types = {service_type.name : 1/len(city.service_types) for service_type in city.service_types}
+
+values = []
+
+def on_iteration(i, X, indicators, value):
+    values.append(value)
+
+ao = AnnealingOptimizer(city_model=city, on_iteration=on_iteration, verbose=True)
+X, indicators, value, provisions = ao.calculate(blocks_lu, blocks_fsi, blocks_gsi, service_types, rate=0.95, max_iter=100_000)
+
+plt.plot(values)
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Value : 0.431:   1%|          | 599/100000 [00:51&lt;2:21:11, 11.73it/s]
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&lt;matplotlib.lines.Line2D at 0x7f49fbf4ee90&gt;]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_cases_land_use_optimization_21_2.png" src="../../_images/examples_cases_land_use_optimization_21_2.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>provisions
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;school&#39;: 0.3019165135206091,
+ &#39;kindergarten&#39;: 0.1721170395869191,
+ &#39;hospital&#39;: 1.0,
+ &#39;polyclinic&#39;: 0.5546623794212219,
+ &#39;pitch&#39;: 0.23357664233576642,
+ &#39;swimming_pool&#39;: 0.7822685788787483,
+ &#39;stadium&#39;: 1.0,
+ &#39;theatre&#39;: 1.0,
+ &#39;museum&#39;: 1.0,
+ &#39;cinema&#39;: 1.0,
+ &#39;mall&#39;: 1.0,
+ &#39;convenience&#39;: 0.03501196242049367,
+ &#39;supermarket&#39;: 0.011672970070504739,
+ &#39;cemetery&#39;: 0.0,
+ &#39;religion&#39;: 1.0,
+ &#39;market&#39;: 0.35456336178594877,
+ &#39;bowling_alley&#39;: 1.0,
+ &#39;university&#39;: 0.8038585209003215,
+ &#39;playground&#39;: 0.22448979591836735,
+ &#39;pharmacy&#39;: 0.17445917655268667,
+ &#39;fuel&#39;: 0.03177629488401652,
+ &#39;beach&#39;: 0.1639881928501148,
+ &#39;train_building&#39;: 1.0,
+ &#39;bank&#39;: 0.5238344683080147,
+ &#39;lawyer&#39;: 1.0,
+ &#39;cafe&#39;: 0.20553691275167785,
+ &#39;subway_entrance&#39;: 0.9333916939159093,
+ &#39;multifunctional_center&#39;: 0.014418496871701126,
+ &#39;hairdresser&#39;: 0.2502606882168926,
+ &#39;restaurant&#39;: 0.16853932584269662,
+ &#39;bar&#39;: 0.13003355704697986,
+ &#39;park&#39;: 0.0,
+ &#39;government&#39;: 1.0,
+ &#39;recruitment&#39;: 0.6420097697138869,
+ &#39;hotel&#39;: 0.0,
+ &#39;zoo&#39;: 1.0,
+ &#39;circus&#39;: 1.0,
+ &#39;post&#39;: 0.004503997297601621,
+ &#39;police&#39;: 0.7676348547717843,
+ &#39;dog_park&#39;: 0.2627722772277228,
+ &#39;hostel&#39;: 0.6952491309385863,
+ &#39;bakery&#39;: 0.651890482398957,
+ &#39;parking&#39;: 0.0013895450629463914,
+ &#39;guest_house&#39;: 0.05213764337851929,
+ &#39;reserve&#39;: 0.0,
+ &#39;sanatorium&#39;: 1.0,
+ &#39;embankment&#39;: 0.0,
+ &#39;machine-building_plant&#39;: 1.0,
+ &#39;brewery&#39;: 0.6016597510373444,
+ &#39;woodworking_plant&#39;: 0.0,
+ &#39;oil_refinery&#39;: 0.0,
+ &#39;plant_of_building_materials&#39;: 0.20855057351407716,
+ &#39;wastewater_plant&#39;: 0.02247925777577962,
+ &#39;water_works&#39;: 0.0,
+ &#39;substation&#39;: 0.010144642974016625,
+ &#39;train_station&#39;: 0.1361969617600838,
+ &#39;bus_station&#39;: 0.08192129953787985,
+ &#39;bus_stop&#39;: 0.005238344683080147,
+ &#39;pier&#39;: 0.3112033195020747,
+ &#39;animal_shelter&#39;: 0.0,
+ &#39;military_kom&#39;: 0.9803921568627451,
+ &#39;prison&#39;: 0.0,
+ &#39;landfill&#39;: 1.0,
+ &#39;plant_nursery&#39;: 0.0,
+ &#39;greenhouse_complex&#39;: 1.0,
+ &#39;warehouse&#39;: 0.0}
+</pre></div></div>
+</div>
+<p>This set of service units if the first approximation of possible composition.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ao.to_bricks_df(X)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>block_id</th>
+      <th>service_type</th>
+      <th>is_integrated</th>
+      <th>area</th>
+      <th>capacity</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>89</th>
+      <td>1</td>
+      <td>train_station</td>
+      <td>False</td>
+      <td>1300.0</td>
+      <td>100</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1259</th>
+      <td>19</td>
+      <td>bus_station</td>
+      <td>False</td>
+      <td>320.0</td>
+      <td>200</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1271</th>
+      <td>19</td>
+      <td>hostel</td>
+      <td>True</td>
+      <td>100.0</td>
+      <td>20</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1283</th>
+      <td>19</td>
+      <td>sanatorium</td>
+      <td>True</td>
+      <td>4000.0</td>
+      <td>1000</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1317</th>
+      <td>19</td>
+      <td>substation</td>
+      <td>False</td>
+      <td>35000.0</td>
+      <td>70</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>8737</th>
+      <td>82</td>
+      <td>pharmacy</td>
+      <td>False</td>
+      <td>85.0</td>
+      <td>70</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>8769</th>
+      <td>82</td>
+      <td>stadium</td>
+      <td>False</td>
+      <td>35000.0</td>
+      <td>21000</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>8792</th>
+      <td>82</td>
+      <td>restaurant</td>
+      <td>True</td>
+      <td>800.0</td>
+      <td>200</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>8819</th>
+      <td>82</td>
+      <td>train_station</td>
+      <td>False</td>
+      <td>1300.0</td>
+      <td>100</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>8934</th>
+      <td>83</td>
+      <td>beach</td>
+      <td>False</td>
+      <td>3100.0</td>
+      <td>1000</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+<p>218 rows × 6 columns</p>
+</div></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Cases" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../../api/index.html" class="btn btn-neutral float-right" title="API documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023-2024, IDU.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

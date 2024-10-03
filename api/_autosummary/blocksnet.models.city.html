@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>blocksnet.models.city &mdash; BlocksNet 0.0.11 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="blocksnet.models.land_use" href="blocksnet.models.land_use.html" />
+    <link rel="prev" title="blocksnet.models" href="blocksnet.models.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            BlocksNet
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../blocksnet/index.html">BlocksNet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="blocksnet.preprocessing.html">blocksnet.preprocessing</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="blocksnet.models.html">blocksnet.models</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">blocksnet.models.city</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#blocksnet.models.city.Service"><code class="docutils literal notranslate"><span class="pre">Service</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blocksnet.models.city.BlockService"><code class="docutils literal notranslate"><span class="pre">BlockService</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blocksnet.models.city.BuildingService"><code class="docutils literal notranslate"><span class="pre">BuildingService</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blocksnet.models.city.Building"><code class="docutils literal notranslate"><span class="pre">Building</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blocksnet.models.city.Block"><code class="docutils literal notranslate"><span class="pre">Block</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blocksnet.models.city.City"><code class="docutils literal notranslate"><span class="pre">City</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.models.land_use.html">blocksnet.models.land_use</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.models.schema.html">blocksnet.models.schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.models.service_type.html">blocksnet.models.service_type</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="blocksnet.method.html">blocksnet.method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="blocksnet.utils.html">blocksnet.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../about_us.html">About us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BlocksNet</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
+          <li class="breadcrumb-item"><a href="blocksnet.models.html">blocksnet.models</a></li>
+      <li class="breadcrumb-item active">blocksnet.models.city</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/_autosummary/blocksnet.models.city.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-blocksnet.models.city">
+<span id="blocksnet-models-city"></span><h1>blocksnet.models.city<a class="headerlink" href="#module-blocksnet.models.city" title="Permalink to this heading"></a></h1>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Block</span></code></a>(*, id, geometry[, land_use, ...])</p></td>
+<td><p>Represents a city block.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blocksnet.models.city.BlockService" title="blocksnet.models.city.BlockService"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BlockService</span></code></a>(*, service_type, capacity, ...)</p></td>
+<td><p>Service within a block taking some of a block's site area.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blocksnet.models.city.Building" title="blocksnet.models.city.Building"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Building</span></code></a>(*, id, block[, services])</p></td>
+<td><p>Represents a building within a block.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blocksnet.models.city.BuildingService" title="blocksnet.models.city.BuildingService"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BuildingService</span></code></a>(*, service_type, capacity, ...)</p></td>
+<td><p>Service within a building.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blocksnet.models.city.City" title="blocksnet.models.city.City"><code class="xref py py-obj docutils literal notranslate"><span class="pre">City</span></code></a>(blocks, acc_mx)</p></td>
+<td><p>Represents a block-network city information model that manages blocks, buildings, services, and their relationships.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blocksnet.models.city.Service" title="blocksnet.models.city.Service"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Service</span></code></a>(*, service_type, capacity, area, ...)</p></td>
+<td><p>Abstract base class for services.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="blocksnet.models.city.Service">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blocksnet.models.city.</span></span><span class="sig-name descname"><span class="pre">Service</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">ServiceType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">capacity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">area</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_integrated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#Service"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.Service" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Abstract base class for services.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>service_type</strong> (<a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><em>ServiceType</em></a>) – Type of the service.</p></li>
+<li><p><strong>capacity</strong> (<em>int</em><em>, </em><em>optional</em>) – Capacity of the service, must be greater than 0.</p></li>
+<li><p><strong>area</strong> (<em>float</em><em>, </em><em>optional</em>) – Service area in square meters, must be greater than 0.</p></li>
+<li><p><strong>is_integrated</strong> (<em>bool</em>) – Whether the service is integrated within a living building.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Service.service_type">
+<span class="sig-name descname"><span class="pre">service_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">ServiceType</span></a></em><a class="headerlink" href="#blocksnet.models.city.Service.service_type" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Service.capacity">
+<span class="sig-name descname"><span class="pre">capacity</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#blocksnet.models.city.Service.capacity" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Service.area">
+<span class="sig-name descname"><span class="pre">area</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#blocksnet.models.city.Service.area" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Service.is_integrated">
+<span class="sig-name descname"><span class="pre">is_integrated</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#blocksnet.models.city.Service.is_integrated" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.Service._get_min_brick">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_get_min_brick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">ServiceType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_integrated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'area'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'capacity'</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceBrick" title="blocksnet.models.service_type.ServiceBrick"><span class="pre">ServiceBrick</span></a></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#Service._get_min_brick"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.Service._get_min_brick" title="Permalink to this definition"></a></dt>
+<dd><p>Get the minimum service brick based on the service type and integration status.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>service_type</strong> (<a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><em>ServiceType</em></a>) – Type of the service.</p></li>
+<li><p><strong>is_integrated</strong> (<em>bool</em>) – Whether the service is integrated within a living building.</p></li>
+<li><p><strong>field</strong> (<em>Literal</em><em>[</em><em>&quot;area&quot;</em><em>, </em><em>&quot;capacity&quot;</em><em>]</em>) – Field to compare, either “area” or “capacity”.</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – Value to compare against.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The brick with the minimum difference in the specified field value.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Brick</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.Service._fill_capacity_and_area">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_fill_capacity_and_area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#Service._fill_capacity_and_area"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.Service._fill_capacity_and_area" title="Permalink to this definition"></a></dt>
+<dd><p>Fill the capacity and area fields in the data dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>dict</em>) – Dictionary containing service data.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Updated dictionary with filled capacity and area fields.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.Service.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#Service.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.Service.to_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the service to a dictionary representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary containing service data.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Service.model_computed_fields">
+<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#blocksnet.models.city.Service.model_computed_fields" title="Permalink to this definition"></a></dt>
+<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blocksnet.models.city.BlockService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blocksnet.models.city.</span></span><span class="sig-name descname"><span class="pre">BlockService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">ServiceType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">capacity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">area</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_integrated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#BlockService"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.BlockService" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#blocksnet.models.city.Service" title="blocksnet.models.city.Service"><code class="xref py py-class docutils literal notranslate"><span class="pre">Service</span></code></a></p>
+<p>Service within a block taking some of a block’s site area.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>block</strong> (<a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><em>Block</em></a>) – The block containing the service.</p></li>
+<li><p><strong>geometry</strong> (<em>Union</em><em>[</em><em>Point</em><em>, </em><em>Polygon</em><em>, </em><em>MultiPolygon</em><em>]</em>) – Geometry representing the service location.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.BlockService.block">
+<span class="sig-name descname"><span class="pre">block</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><span class="pre">Block</span></a></em><a class="headerlink" href="#blocksnet.models.city.BlockService.block" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.BlockService.geometry">
+<span class="sig-name descname"><span class="pre">geometry</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Point</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Polygon</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">MultiPolygon</span></em><a class="headerlink" href="#blocksnet.models.city.BlockService.geometry" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.BlockService.validate_model">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#BlockService.validate_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.BlockService.validate_model" title="Permalink to this definition"></a></dt>
+<dd><p>Validate and process the model data before initialization to make sure capacities and areas are filled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>dict</em>) – Data dictionary containing service information.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Validated and processed data dictionary.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.BlockService.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#BlockService.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.BlockService.to_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the block service to a dictionary representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary containing block service data.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.BlockService.model_computed_fields">
+<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#blocksnet.models.city.BlockService.model_computed_fields" title="Permalink to this definition"></a></dt>
+<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blocksnet.models.city.BuildingService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blocksnet.models.city.</span></span><span class="sig-name descname"><span class="pre">BuildingService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">ServiceType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">capacity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">area</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_integrated</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#BuildingService"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.BuildingService" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#blocksnet.models.city.Service" title="blocksnet.models.city.Service"><code class="xref py py-class docutils literal notranslate"><span class="pre">Service</span></code></a></p>
+<p>Service within a building.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>building</strong> (<a class="reference internal" href="#blocksnet.models.city.Building" title="blocksnet.models.city.Building"><em>Building</em></a>) – The building containing the service.</p></li>
+<li><p><strong>geometry</strong> (<em>Point</em>) – Point geometry representing the service location.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.BuildingService.building">
+<span class="sig-name descname"><span class="pre">building</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#blocksnet.models.city.Building" title="blocksnet.models.city.Building"><span class="pre">Building</span></a></em><a class="headerlink" href="#blocksnet.models.city.BuildingService.building" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.BuildingService.geometry">
+<span class="sig-name descname"><span class="pre">geometry</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Point</span></em><a class="headerlink" href="#blocksnet.models.city.BuildingService.geometry" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.BuildingService.validate_model">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#BuildingService.validate_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.BuildingService.validate_model" title="Permalink to this definition"></a></dt>
+<dd><p>Validate and process the model data before initialization to figure out integration status and fill capacity and area if needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>dict</em>) – Data dictionary containing service information.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Validated and processed data dictionary.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.BuildingService.attach_geometry">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">attach_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#blocksnet.models.city.BuildingService" title="blocksnet.models.city.BuildingService"><span class="pre">BuildingService</span></a></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#BuildingService.attach_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.BuildingService.attach_geometry" title="Permalink to this definition"></a></dt>
+<dd><p>Attach geometry of the service to the building representative point after initialization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>self</strong> (<a class="reference internal" href="#blocksnet.models.city.BuildingService" title="blocksnet.models.city.BuildingService"><em>BuildingService</em></a>) – Instance of the building service.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The building service instance with attached geometry.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#blocksnet.models.city.BuildingService" title="blocksnet.models.city.BuildingService">BuildingService</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.BuildingService.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#BuildingService.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.BuildingService.to_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the building service to a dictionary representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary containing building service data.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.BuildingService.model_computed_fields">
+<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#blocksnet.models.city.BuildingService.model_computed_fields" title="Permalink to this definition"></a></dt>
+<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blocksnet.models.city.Building">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blocksnet.models.city.</span></span><span class="sig-name descname"><span class="pre">Building</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#Building"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.Building" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Represents a building within a block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>int</em>) – Unique identifier across the whole city information model.</p></li>
+<li><p><strong>block</strong> (<a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><em>Block</em></a>) – Parent block containing the building.</p></li>
+<li><p><strong>services</strong> (<em>list</em><em> of </em><a class="reference internal" href="#blocksnet.models.city.BuildingService" title="blocksnet.models.city.BuildingService"><em>BuildingService</em></a><em>, </em><em>optional</em>) – List of services inside the building.</p></li>
+<li><p><strong>geometry</strong> (<em>Union</em><em>[</em><em>Polygon</em><em>, </em><em>MultiPolygon</em><em>]</em>) – Geometry representing the building.</p></li>
+<li><p><strong>build_floor_area</strong> (<em>float</em>) – Total area of the building in square meters. Must be equal or greater than 0.</p></li>
+<li><p><strong>living_area</strong> (<em>float</em>) – Building’s area dedicated for living in square meters. Must be equal or greater than 0.</p></li>
+<li><p><strong>non_living_area</strong> (<em>float</em>) – Building’s area dedicated for non-living activities in square meters. Must be equal or greater than 0.</p></li>
+<li><p><strong>footprint_area</strong> (<em>float</em>) – Building’s ground floor area in square meters. Must be equal or greater than 0.</p></li>
+<li><p><strong>number_of_floors</strong> (<em>int</em>) – Number of floors (storeys) in the building. Must be equal or greater than 1.</p></li>
+<li><p><strong>population</strong> (<em>int</em>) – Total population of the building. Must be equal or greater than 0.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Building.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#blocksnet.models.city.Building.id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Building.block">
+<span class="sig-name descname"><span class="pre">block</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><span class="pre">Block</span></a></em><a class="headerlink" href="#blocksnet.models.city.Building.block" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Building.services">
+<span class="sig-name descname"><span class="pre">services</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blocksnet.models.city.BuildingService" title="blocksnet.models.city.BuildingService"><span class="pre">BuildingService</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#blocksnet.models.city.Building.services" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Building.geometry">
+<span class="sig-name descname"><span class="pre">geometry</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Polygon</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">MultiPolygon</span></em><a class="headerlink" href="#blocksnet.models.city.Building.geometry" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Building.build_floor_area">
+<span class="sig-name descname"><span class="pre">build_floor_area</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#blocksnet.models.city.Building.build_floor_area" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Building.living_area">
+<span class="sig-name descname"><span class="pre">living_area</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#blocksnet.models.city.Building.living_area" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Building.non_living_area">
+<span class="sig-name descname"><span class="pre">non_living_area</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#blocksnet.models.city.Building.non_living_area" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Building.footprint_area">
+<span class="sig-name descname"><span class="pre">footprint_area</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#blocksnet.models.city.Building.footprint_area" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Building.number_of_floors">
+<span class="sig-name descname"><span class="pre">number_of_floors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#blocksnet.models.city.Building.number_of_floors" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Building.population">
+<span class="sig-name descname"><span class="pre">population</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#blocksnet.models.city.Building.population" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.Building.validate_model">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#Building.validate_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.Building.validate_model" title="Permalink to this definition"></a></dt>
+<dd><p>Validate and process the model data before initialization to fill needed empty fields.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>dict</em>) – Data dictionary containing building information.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Validated and processed data dictionary.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Building.is_living">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_living</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#blocksnet.models.city.Building.is_living" title="Permalink to this definition"></a></dt>
+<dd><p>Indicates if the building is residential.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.Building.update_services">
+<span class="sig-name descname"><span class="pre">update_services</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">ServiceType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#Building.update_services"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.Building.update_services" title="Permalink to this definition"></a></dt>
+<dd><p>Update services of the building.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>service_type</strong> (<a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><em>ServiceType</em></a>) – The type of service to be updated.</p></li>
+<li><p><strong>gdf</strong> (<em>GeoDataFrame</em><em>, </em><em>optional</em>) – A GeoDataFrame containing service data. If not provided, services of specified type will be removed from the building.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.Building.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#Building.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.Building.to_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the building object to a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary representation of the building.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Building.model_computed_fields">
+<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#blocksnet.models.city.Building.model_computed_fields" title="Permalink to this definition"></a></dt>
+<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blocksnet.models.city.</span></span><span class="sig-name descname"><span class="pre">Block</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#Block"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.Block" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModel</span></code></p>
+<p>Represents a city block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>int</em>) – Unique block identifier across the whole city model.</p></li>
+<li><p><strong>geometry</strong> (<em>Polygon</em>) – Geometry representing the city block.</p></li>
+<li><p><strong>land_use</strong> (<a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><em>LandUse</em></a><em>, </em><em>optional</em>) – Current city block land use.</p></li>
+<li><p><strong>buildings</strong> (<em>list</em><em> of </em><a class="reference internal" href="#blocksnet.models.city.Building" title="blocksnet.models.city.Building"><em>Building</em></a><em>, </em><em>optional</em>) – List of buildings inside the block.</p></li>
+<li><p><strong>services</strong> (<em>list</em><em> of </em><a class="reference internal" href="#blocksnet.models.city.BlockService" title="blocksnet.models.city.BlockService"><em>BlockService</em></a><em>, </em><em>optional</em>) – Services that occupy some area of the block.</p></li>
+<li><p><strong>city</strong> (<a class="reference internal" href="#blocksnet.models.city.City" title="blocksnet.models.city.City"><em>City</em></a>) – Parent city instance that contains the block.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#blocksnet.models.city.Block.id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.geometry">
+<span class="sig-name descname"><span class="pre">geometry</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Polygon</span></em><a class="headerlink" href="#blocksnet.models.city.Block.geometry" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.land_use">
+<span class="sig-name descname"><span class="pre">land_use</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><span class="pre">LandUse</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#blocksnet.models.city.Block.land_use" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.buildings">
+<span class="sig-name descname"><span class="pre">buildings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blocksnet.models.city.Building" title="blocksnet.models.city.Building"><span class="pre">Building</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#blocksnet.models.city.Block.buildings" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.services">
+<span class="sig-name descname"><span class="pre">services</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blocksnet.models.city.BlockService" title="blocksnet.models.city.BlockService"><span class="pre">BlockService</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#blocksnet.models.city.Block.services" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.city">
+<span class="sig-name descname"><span class="pre">city</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#blocksnet.models.city.City" title="blocksnet.models.city.City"><span class="pre">City</span></a></em><a class="headerlink" href="#blocksnet.models.city.Block.city" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.validate_land_use">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">validate_land_use</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">land_use</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><span class="pre">LandUse</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><span class="pre">LandUse</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#Block.validate_land_use"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.Block.validate_land_use" title="Permalink to this definition"></a></dt>
+<dd><p>Validate and transform the land use value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>land_use</strong> (<em>str</em><em> or </em><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><em>LandUse</em></a>) – The land use value to validate.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The validated land use.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse">LandUse</a> or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.all_services">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">all_services</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blocksnet.models.city.Service" title="blocksnet.models.city.Service"><span class="pre">blocksnet.models.city.Service</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#blocksnet.models.city.Block.all_services" title="Permalink to this definition"></a></dt>
+<dd><p>Get all services in the block, including those in buildings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of all services in the block.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of <a class="reference internal" href="#blocksnet.models.city.Service" title="blocksnet.models.city.Service">Service</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.site_area">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">site_area</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#blocksnet.models.city.Block.site_area" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the block area in square meters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Block area in square meters.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.population">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">population</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#blocksnet.models.city.Block.population" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the total population of the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total population of the block.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.footprint_area">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">footprint_area</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#blocksnet.models.city.Block.footprint_area" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the total footprint area of the buildings in the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total footprint area of the buildings in square meters.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.build_floor_area">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build_floor_area</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#blocksnet.models.city.Block.build_floor_area" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the total build floor area of the buildings in the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total build floor area of the buildings in square meters.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.living_area">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">living_area</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#blocksnet.models.city.Block.living_area" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the total living area of the buildings in the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total living area of the buildings in square meters.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.non_living_area">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">non_living_area</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#blocksnet.models.city.Block.non_living_area" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the total non-living area of the buildings in the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total non-living area of the buildings in square meters.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.is_living">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_living</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#blocksnet.models.city.Block.is_living" title="Permalink to this definition"></a></dt>
+<dd><p>Check if the block contains any living building and thus can be stated as living.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if there is at least one living building, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.living_demand">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">living_demand</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#blocksnet.models.city.Block.living_demand" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the square meters of living area per person.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Living area per person in square meters, or None if the population is 0.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.fsi">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fsi</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#blocksnet.models.city.Block.fsi" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the Floor Space Index (FSI).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>FSI, which is the build floor area per site area.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.gsi">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gsi</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#blocksnet.models.city.Block.gsi" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the Ground Space Index (GSI).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>GSI, which is the footprint area per site area.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.mxi">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mxi</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#blocksnet.models.city.Block.mxi" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the Mixed Use Index (MXI).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>MXI, which is the living area per build floor area, or None if the build floor area is 0.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.l">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">l</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#blocksnet.models.city.Block.l" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the mean number of floors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Mean number of floors, or None if the GSI is 0.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.osr">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">osr</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#blocksnet.models.city.Block.osr" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the Open Space Ratio (OSR).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>OSR, or None if the FSI is 0.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.share_living">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">share_living</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#blocksnet.models.city.Block.share_living" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the share of living area, which is living area per footprint area.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Share of living area, or None if the footprint area is 0.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.business_area">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">business_area</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#blocksnet.models.city.Block.business_area" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the business area in the block, which is total business area of buildings inside the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Business area in square meters.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.share_business">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">share_business</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#blocksnet.models.city.Block.share_business" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the share of business area, which is business area per footprint area.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Share of business area, or None if the footprint area is zero.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>float or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.buildings_indicators">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">buildings_indicators</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#blocksnet.models.city.Block.buildings_indicators" title="Permalink to this definition"></a></dt>
+<dd><p>Get indicators related to buildings in the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary containing various building indicators.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.territory_indicators">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">territory_indicators</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#blocksnet.models.city.Block.territory_indicators" title="Permalink to this definition"></a></dt>
+<dd><p>Get indicators related to the territory of the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary containing various territory indicators.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.services_indicators">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">services_indicators</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span></em><a class="headerlink" href="#blocksnet.models.city.Block.services_indicators" title="Permalink to this definition"></a></dt>
+<dd><p>Get indicators related to services in the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dictionary containing service capacities by type.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.land_use_service_types">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">land_use_service_types</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">blocksnet.models.service_type.ServiceType</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#blocksnet.models.city.Block.land_use_service_types" title="Permalink to this definition"></a></dt>
+<dd><p>Get the service types allowed by the land use of the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of service types allowed by the land use.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of <a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType">ServiceType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.get_services_gdf">
+<span class="sig-name descname"><span class="pre">get_services_gdf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#Block.get_services_gdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.Block.get_services_gdf" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a GeoDataFrame of services in the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>GeoDataFrame containing services data.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>gpd.GeoDataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.get_buildings_gdf">
+<span class="sig-name descname"><span class="pre">get_buildings_gdf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#Block.get_buildings_gdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.Block.get_buildings_gdf" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a GeoDataFrame of buildings in the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>GeoDataFrame containing buildings data.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>gpd.GeoDataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simplify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#Block.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.Block.to_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the block to a dictionary representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>simplify</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, exclude service indicators from the dictionary. Default is False.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary representation of the block.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.update_buildings">
+<span class="sig-name descname"><span class="pre">update_buildings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#Block.update_buildings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.Block.update_buildings" title="Permalink to this definition"></a></dt>
+<dd><p>Update the buildings within the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>gdf</strong> (<em>gpd.GeoDataFrame</em><em>, </em><em>optional</em>) – GeoDataFrame containing building data. If None, clear the list of buildings.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.update_services">
+<span class="sig-name descname"><span class="pre">update_services</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">ServiceType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#Block.update_services"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.Block.update_services" title="Permalink to this definition"></a></dt>
+<dd><p>Update the services within the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>service_type</strong> (<a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><em>ServiceType</em></a>) – The type of service to update.</p></li>
+<li><p><strong>gdf</strong> (<em>gpd.GeoDataFrame</em><em>, </em><em>optional</em>) – GeoDataFrame containing service data. If None, remove all services of the given type.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.from_gdf">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_gdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#blocksnet.models.city.City" title="blocksnet.models.city.City"><span class="pre">City</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><span class="pre">blocksnet.models.city.Block</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#Block.from_gdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.Block.from_gdf" title="Permalink to this definition"></a></dt>
+<dd><p>Generate a dictionary of blocks from a GeoDataFrame. Must contain following columns:
+- index : int
+- geometry : Polygon
+- land_use : LandUse or str</p>
+<p>For more specified information, please, check the Block class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gdf</strong> (<em>gpd.GeoDataFrame</em>) – GeoDataFrame containing block data.</p></li>
+<li><p><strong>city</strong> (<a class="reference internal" href="#blocksnet.models.city.City" title="blocksnet.models.city.City"><em>City</em></a>) – City instance containing the blocks.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>dict of int</strong> – Dictionary mapping block IDs to Block instances.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block">Block</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#Block.__getitem__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.Block.__getitem__" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">building_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#blocksnet.models.city.Building" title="blocksnet.models.city.Building"><span class="pre">Building</span></a></span></span></dt>
+<dd><p>Access a building information or instance by a specified argument.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>arg</strong> (<em>Any</em>) – Argument to access the building.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>NotImplementedError</strong> – If the argument type is not supported.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block._">
+<span class="sig-name descname"><span class="pre">_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">building_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#blocksnet.models.city.Building" title="blocksnet.models.city.Building"><span class="pre">Building</span></a></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#Block._"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.Block._" title="Permalink to this definition"></a></dt>
+<dd><p>Access a building within the block by its ID.
+For example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">block</span> <span class="o">=</span> <span class="n">city</span><span class="p">[</span><span class="mi">456</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">block</span><span class="p">[</span><span class="mi">123</span><span class="p">]</span>
+<span class="go">Building(id=123, block_id=456, ...)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>building_id</strong> (<em>int</em>) – ID of the building to access.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The building with the specified ID.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#blocksnet.models.city.Building" title="blocksnet.models.city.Building">Building</a></p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>KeyError</strong> – If no building with the specified ID is found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.__hash__">
+<span class="sig-name descname"><span class="pre">__hash__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#Block.__hash__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.Block.__hash__" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the hash value for the block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Hash value of the block.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.models.city.Block.model_computed_fields">
+<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#blocksnet.models.city.Block.model_computed_fields" title="Permalink to this definition"></a></dt>
+<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blocksnet.models.city.City">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blocksnet.models.city.</span></span><span class="sig-name descname"><span class="pre">City</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">acc_mx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.City" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents a block-network city information model that manages blocks, buildings,
+services, and their relationships.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>crs</strong> (<em>pyproj.CRS</em>) – Coordinate Reference System (CRS) used by the city model.</p></li>
+<li><p><strong>accessibility_matrix</strong> (<em>pd.DataFrame</em>) – Accessibility matrix representing relationships between city blocks (travel time in minutes by drive, walk, intermodal or another type of city graph).</p></li>
+<li><p><strong>_blocks</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><em>Block</em></a><em>]</em>) – Dictionary mapping block IDs to Block objects.</p></li>
+<li><p><strong>_service_types</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><em>ServiceType</em></a><em>]</em>) – Dictionary mapping service type names to ServiceType objects.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.City.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(15,</span> <span class="pre">15)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_travel_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.City.plot" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the city model, displaying blocks, land use, buildings, and services.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.City.get_land_use_service_types">
+<span class="sig-name descname"><span class="pre">get_land_use_service_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">land_use</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><span class="pre">LandUse</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.get_land_use_service_types"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.City.get_land_use_service_types" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve service types allowed by a specific land use.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.City.get_buildings_gdf">
+<span class="sig-name descname"><span class="pre">get_buildings_gdf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">gpd.GeoDataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.get_buildings_gdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.City.get_buildings_gdf" title="Permalink to this definition"></a></dt>
+<dd><p>Return a GeoDataFrame of all buildings in the city model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.City.get_services_gdf">
+<span class="sig-name descname"><span class="pre">get_services_gdf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">gpd.GeoDataFrame</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.get_services_gdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.City.get_services_gdf" title="Permalink to this definition"></a></dt>
+<dd><p>Return a GeoDataFrame of all services in the city model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.City.get_blocks_gdf">
+<span class="sig-name descname"><span class="pre">get_blocks_gdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simplify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">gpd.GeoDataFrame</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.get_blocks_gdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.City.get_blocks_gdf" title="Permalink to this definition"></a></dt>
+<dd><p>Return a GeoDataFrame of all blocks in the city model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.City.update_land_use">
+<span class="sig-name descname"><span class="pre">update_land_use</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">gpd.GeoDataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.update_land_use"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.City.update_land_use" title="Permalink to this definition"></a></dt>
+<dd><p>Update land use of blocks based on a GeoDataFrame.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.City.update_buildings">
+<span class="sig-name descname"><span class="pre">update_buildings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">gpd.GeoDataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.update_buildings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.City.update_buildings" title="Permalink to this definition"></a></dt>
+<dd><p>Update buildings in the city model based on a GeoDataFrame.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.City.update_services">
+<span class="sig-name descname"><span class="pre">update_services</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">ServiceType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">gpd.GeoDataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.update_services"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.City.update_services" title="Permalink to this definition"></a></dt>
+<dd><p>Update services of a specified type in the city model based on a GeoDataFrame.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.City.add_service_type">
+<span class="sig-name descname"><span class="pre">add_service_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">ServiceType</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.add_service_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.City.add_service_type" title="Permalink to this definition"></a></dt>
+<dd><p>Add a new service type to the city model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.City.get_distance">
+<span class="sig-name descname"><span class="pre">get_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block_a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><span class="pre">Block</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><span class="pre">Block</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.get_distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.City.get_distance" title="Permalink to this definition"></a></dt>
+<dd><p>Get the distance (travel time) between two blocks.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.City.get_out_edges">
+<span class="sig-name descname"><span class="pre">get_out_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><span class="pre">Block</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.get_out_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.City.get_out_edges" title="Permalink to this definition"></a></dt>
+<dd><p>Get outgoing edges (connections) for a given block.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.City.get_in_edges">
+<span class="sig-name descname"><span class="pre">get_in_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><span class="pre">Block</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.get_in_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.City.get_in_edges" title="Permalink to this definition"></a></dt>
+<dd><p>Get incoming edges (connections) for a given block.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.City.epsg">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">epsg</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#blocksnet.models.city.City.epsg" title="Permalink to this definition"></a></dt>
+<dd><p>Property to retrieve the EPSG code of the city model’s CRS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>EPSG code of the CRS.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.City.blocks">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">blocks</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><span class="pre">blocksnet.models.city.Block</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#blocksnet.models.city.City.blocks" title="Permalink to this definition"></a></dt>
+<dd><p>Return a list of all blocks in the city model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of Block objects representing the city blocks.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[<a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block">Block</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.City.service_types">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">service_types</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">blocksnet.models.service_type.ServiceType</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#blocksnet.models.city.City.service_types" title="Permalink to this definition"></a></dt>
+<dd><p>Return a list of all service types available in the city model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of ServiceType objects representing different service types.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[<a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType">ServiceType</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.City.buildings">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">buildings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blocksnet.models.city.Building" title="blocksnet.models.city.Building"><span class="pre">blocksnet.models.city.Building</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#blocksnet.models.city.City.buildings" title="Permalink to this definition"></a></dt>
+<dd><p>Return a list of all buildings in the city model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of Building objects representing all buildings in the city.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[<a class="reference internal" href="#blocksnet.models.city.Building" title="blocksnet.models.city.Building">Building</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.City.services">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">services</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blocksnet.models.city.Service" title="blocksnet.models.city.Service"><span class="pre">blocksnet.models.city.Service</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#blocksnet.models.city.City.services" title="Permalink to this definition"></a></dt>
+<dd><p>Return a list of all services in the city model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of Service objects representing all services available in the city.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[<a class="reference internal" href="#blocksnet.models.city.Service" title="blocksnet.models.city.Service">Service</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="blocksnet.models.city.City.loaded_service_types">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">loaded_service_types</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">blocksnet.models.service_type.ServiceType</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#blocksnet.models.city.City.loaded_service_types" title="Permalink to this definition"></a></dt>
+<dd><p>Return list of service types loaded in the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of ServiceTypes existing in the city model.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[<a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType">ServiceType</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(15,</span> <span class="pre">15)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_travel_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">15</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the city model data including blocks, land use, buildings, and services.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>figsize</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em><em>, </em><em>optional</em>) – Size of the plot to be displayed. Default is (15,15).</p></li>
+<li><p><strong>linewidth</strong> (<em>float</em><em>, </em><em>optional</em>) – Line width of polygon objects to be displayed. Default is 0.1.</p></li>
+<li><p><strong>max_travel_time</strong> (<em>float</em><em>, </em><em>optional</em>) – Max edge weight to be displayed on the plot (in min). Default is 15.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">get_land_use_service_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">land_use</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><span class="pre">LandUse</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">blocksnet.models.service_type.ServiceType</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.get_land_use_service_types"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id1" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve service types allowed by a specific land use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>land_use</strong> (<a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><em>LandUse</em></a><em> | </em><em>None</em>) – Land use type to filter service types by.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of ServiceType objects associated with the specified land use.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType">ServiceType</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">get_buildings_gdf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.get_buildings_gdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id2" title="Permalink to this definition"></a></dt>
+<dd><p>Return a GeoDataFrame of all buildings in the city model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>GeoDataFrame containing all buildings’ geometries and attributes.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>gpd.GeoDataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">get_services_gdf</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.get_services_gdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id3" title="Permalink to this definition"></a></dt>
+<dd><p>Return a GeoDataFrame of all services in the city model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>GeoDataFrame containing all services’ geometries and attributes.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>gpd.GeoDataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">get_blocks_gdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simplify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.get_blocks_gdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id4" title="Permalink to this definition"></a></dt>
+<dd><p>Return a GeoDataFrame of all blocks in the city model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>simplify</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to simplify block parameters (default is False). If True, services information will not be provided.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>GeoDataFrame containing all blocks’ geometries and attributes.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>gpd.GeoDataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">update_land_use</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.update_land_use"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id5" title="Permalink to this definition"></a></dt>
+<dd><p>Update land use information for blocks based on a GeoDataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>gdf</strong> (<em>gpd.GeoDataFrame</em>) – GeoDataFrame containing updated land use information. It should have the same CRS as the city model,
+and its index should match the IDs of blocks in the city model. It should have land_use column with value either LandUse, str or None.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>AssertionError</strong> – If the CRS of <cite>gdf</cite> does not match the city model’s CRS, or if the index of <cite>gdf</cite> does not match block IDs,
+    or if the length of <cite>gdf</cite> does not match the number of blocks in the city model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">update_buildings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.update_buildings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id6" title="Permalink to this definition"></a></dt>
+<dd><p>Update buildings information for blocks based on a GeoDataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>gdf</strong> (<em>gpd.GeoDataFrame</em>) – <p>GeoDataFrame containing updated buildings information. It should have the same CRS as the city model. It must contain the following columns:</p>
+<ul class="simple">
+<li><p>index : <cite>int</cite> - unique building id</p></li>
+<li><p>geometry : <cite>Polygon</cite> | MultiPolygon</p></li>
+<li><p>build_floor_area : <cite>float</cite> &gt;= 0</p></li>
+<li><p>living_area : <cite>float</cite> &gt;= 0</p></li>
+<li><p>non_living_area : <cite>float</cite> &gt;= 0</p></li>
+<li><p>footprint_area : <cite>float</cite> &gt;= 0</p></li>
+<li><p>number_of_floors : <cite>int</cite> &gt;= 1</p></li>
+<li><p>population : <cite>int</cite> &gt;= 0</p></li>
+</ul>
+<p>Please, do not specify building_id nor block_id columns, as they are used in the method. For more specific information, please, check Building class.</p>
+</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>GeoDataFrame buildings that did not intersect any block.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>gpd.GeoDataFrame</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>AssertionError</strong> – If the CRS of <cite>gdf</cite> does not match the city model’s CRS.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-name descname"><span class="pre">update_services</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">ServiceType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.update_services"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id7" title="Permalink to this definition"></a></dt>
+<dd><p>Update services information for blocks and buildings based on a GeoDataFrame.
+Based on intersections with city buildings, service may be either <cite>BuldingService</cite> or <cite>BlockService</cite>.
+Please, make sure, that block services (for example, pitch or playground) do not intersect any buildings!</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>service_type</strong> (<a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><em>ServiceType</em></a><em> | </em><em>str</em>) – ServiceType object or name of the service type to update.</p></li>
+<li><p><strong>gdf</strong> (<em>gpd.GeoDataFrame</em>) – <p>GeoDataFrame containing updated services information. It should have the same CRS as the city model. It must contain the following columns:</p>
+<ul>
+<li><p>index : int</p></li>
+<li><p>geometry : Polygon | MultiPolygon | Point</p></li>
+<li><p>capacity : int (optional)</p></li>
+<li><p>area : int (optional)</p></li>
+</ul>
+<p>For more specified information, please, check Service class.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>AssertionError</strong> – If the CRS of <cite>gdf</cite> does not match the city model’s CRS.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id8">
+<span class="sig-name descname"><span class="pre">add_service_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">ServiceType</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.add_service_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id8" title="Permalink to this definition"></a></dt>
+<dd><p>Add a new service type to the city model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>service_type</strong> (<a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><em>ServiceType</em></a>) – ServiceType object to be added.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>KeyError</strong> – If a service type with the same name already exists in the city model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id9">
+<span class="sig-name descname"><span class="pre">get_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block_a</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><span class="pre">Block</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><span class="pre">Block</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.get_distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id9" title="Permalink to this definition"></a></dt>
+<dd><p>Get the distance (in minutes) between two blocks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>block_a</strong> (<em>int</em><em> | </em><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><em>Block</em></a>) – ID or Block object representing the first block.</p></li>
+<li><p><strong>block_b</strong> (<em>int</em><em> | </em><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><em>Block</em></a>) – ID or Block object representing the second block.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Distance in minutes between the two blocks.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id10">
+<span class="sig-name descname"><span class="pre">get_out_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><span class="pre">Block</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><span class="pre">blocksnet.models.city.Block</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><span class="pre">blocksnet.models.city.Block</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.get_out_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id10" title="Permalink to this definition"></a></dt>
+<dd><p>Get outgoing edges for a specific block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>block</strong> (<em>int</em><em> | </em><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><em>Block</em></a>) – ID or Block object for which outgoing edges are requested.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of tuples representing outgoing edges with weights between blocks.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[(<a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block">Block</a>, <a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block">Block</a>, float)]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id11">
+<span class="sig-name descname"><span class="pre">get_in_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><span class="pre">Block</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><span class="pre">blocksnet.models.city.Block</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><span class="pre">blocksnet.models.city.Block</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.get_in_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id11" title="Permalink to this definition"></a></dt>
+<dd><p>Get incoming edges for a specific block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>block</strong> (<em>int</em><em> | </em><a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block"><em>Block</em></a>) – ID or Block object for which incoming edges are requested.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of tuples representing incoming edges with weights between blocks.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[(<a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block">Block</a>, <a class="reference internal" href="#blocksnet.models.city.Block" title="blocksnet.models.city.Block">Block</a>, float)]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.City._">
+<span class="sig-name descname"><span class="pre">_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_type_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City._"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.City._" title="Permalink to this definition"></a></dt>
+<dd><p>Check if a service type exists in the city model. For example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="s1">&#39;school&#39;</span> <span class="ow">in</span> <span class="n">city</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s1">&#39;computer_club&#39;</span> <span class="ow">in</span> <span class="n">city</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>service_type_name</strong> (<em>str</em>) – Name of the service type to check.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the service type exists in the city model, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.City.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.__str__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.City.__str__" title="Permalink to this definition"></a></dt>
+<dd><p>Return a string representation of the city model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>String describing the city model, including CRS, number of blocks, service types, buildings, and services.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.City.from_pickle">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pickle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.from_pickle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.City.from_pickle" title="Permalink to this definition"></a></dt>
+<dd><p>Load a city model from a <cite>.pickle</cite> file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em>) – Path to the <cite>.pickle</cite> file containing the city model.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The loaded City object from the <cite>.pickle</cite> file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#blocksnet.models.city.City" title="blocksnet.models.city.City">City</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.models.city.City.to_pickle">
+<span class="sig-name descname"><span class="pre">to_pickle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/models/city.html#City.to_pickle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.models.city.City.to_pickle" title="Permalink to this definition"></a></dt>
+<dd><p>Save the city model to a <cite>.pickle</cite> file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em>) – Path to the <cite>.pickle</cite> file where the city model will be saved.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="blocksnet.models.html" class="btn btn-neutral float-left" title="blocksnet.models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="blocksnet.models.land_use.html" class="btn btn-neutral float-right" title="blocksnet.models.land_use" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023-2024, IDU.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

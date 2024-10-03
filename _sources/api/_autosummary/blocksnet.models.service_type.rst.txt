@@ -1,0 +1,30 @@
+blocksnet.models.service\_type
+==============================
+
+.. automodule:: blocksnet.models.service_type
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ServiceBrick
+      ServiceType
+   
+   
+
+   
+   
+   
+
+
+

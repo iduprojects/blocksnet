@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>blocksnet.method &mdash; BlocksNet 0.0.11 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="blocksnet.method.accessibility" href="blocksnet.method.accessibility.html" />
+    <link rel="prev" title="blocksnet.models.service_type" href="blocksnet.models.service_type.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            BlocksNet
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../blocksnet/index.html">BlocksNet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="blocksnet.preprocessing.html">blocksnet.preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="blocksnet.models.html">blocksnet.models</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">blocksnet.method</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.accessibility.html">blocksnet.method.accessibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.annealing_optimizer.html">blocksnet.method.annealing_optimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.base_method.html">blocksnet.method.base_method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.centrality.html">blocksnet.method.centrality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.connectivity.html">blocksnet.method.connectivity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.diversity.html">blocksnet.method.diversity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.integration.html">blocksnet.method.integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.land_use_prediction.html">blocksnet.method.land_use_prediction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.population_centrality.html">blocksnet.method.population_centrality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.provision.html">blocksnet.method.provision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.spacematrix.html">blocksnet.method.spacematrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.vacant_area.html">blocksnet.method.vacant_area</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="blocksnet.utils.html">blocksnet.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../about_us.html">About us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BlocksNet</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
+      <li class="breadcrumb-item active">blocksnet.method</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/_autosummary/blocksnet.method.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-blocksnet.method">
+<span id="blocksnet-method"></span><h1>blocksnet.method<a class="headerlink" href="#module-blocksnet.method" title="Permalink to this heading"></a></h1>
+<p>Methods provided by blocksnet are located here. Methods are used only with initialized city model.</p>
+<p class="rubric">Modules</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="blocksnet.method.accessibility.html#module-blocksnet.method.accessibility" title="blocksnet.method.accessibility"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blocksnet.method.accessibility</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="blocksnet.method.annealing_optimizer.html#module-blocksnet.method.annealing_optimizer" title="blocksnet.method.annealing_optimizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blocksnet.method.annealing_optimizer</span></code></a></p></td>
+<td><p>Module providing class for simulated annealing optimization of blocks services constrained by land uses.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="blocksnet.method.base_method.html#module-blocksnet.method.base_method" title="blocksnet.method.base_method"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blocksnet.method.base_method</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="blocksnet.method.centrality.html#module-blocksnet.method.centrality" title="blocksnet.method.centrality"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blocksnet.method.centrality</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="blocksnet.method.connectivity.html#module-blocksnet.method.connectivity" title="blocksnet.method.connectivity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blocksnet.method.connectivity</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="blocksnet.method.diversity.html#module-blocksnet.method.diversity" title="blocksnet.method.diversity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blocksnet.method.diversity</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="blocksnet.method.integration.html#module-blocksnet.method.integration" title="blocksnet.method.integration"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blocksnet.method.integration</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="blocksnet.method.land_use_prediction.html#module-blocksnet.method.land_use_prediction" title="blocksnet.method.land_use_prediction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blocksnet.method.land_use_prediction</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="blocksnet.method.population_centrality.html#module-blocksnet.method.population_centrality" title="blocksnet.method.population_centrality"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blocksnet.method.population_centrality</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="blocksnet.method.provision.html#module-blocksnet.method.provision" title="blocksnet.method.provision"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blocksnet.method.provision</span></code></a></p></td>
+<td><p>Service type provisions assessment module.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="blocksnet.method.spacematrix.html#module-blocksnet.method.spacematrix" title="blocksnet.method.spacematrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blocksnet.method.spacematrix</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="blocksnet.method.vacant_area.html#module-blocksnet.method.vacant_area" title="blocksnet.method.vacant_area"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blocksnet.method.vacant_area</span></code></a></p></td>
+<td><p>Identify vacant areas within specified blocks.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="blocksnet.models.service_type.html" class="btn btn-neutral float-left" title="blocksnet.models.service_type" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="blocksnet.method.accessibility.html" class="btn btn-neutral float-right" title="blocksnet.method.accessibility" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023-2024, IDU.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+blocksnet.method.base\_method
+=============================
+
+.. automodule:: blocksnet.method.base_method
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      BaseMethod
+   
+   
+
+   
+   
+   
+
+
+

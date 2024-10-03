@@ -1,0 +1,32 @@
+blocksnet.utils.helpers
+=======================
+
+.. automodule:: blocksnet.utils.helpers
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      drop_contained_geometries
+      fill_holes
+      filter_bottlenecks
+      get_polygon_aspect_ratio
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

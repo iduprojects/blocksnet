@@ -1,0 +1,29 @@
+blocksnet.models.land\_use
+==========================
+
+.. automodule:: blocksnet.models.land_use
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LandUse
+   
+   
+
+   
+   
+   
+
+
+

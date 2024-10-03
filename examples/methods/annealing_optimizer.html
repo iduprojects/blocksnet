@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Annealing optimizer &mdash; BlocksNet 0.0.11 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/nbsphinx-code-cells.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+        <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Integration" href="integration.html" />
+    <link rel="prev" title="Provision" href="provision.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            BlocksNet
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../blocksnet/index.html">BlocksNet</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../pipeline.html">Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../blocks_generator.html">City blocks layer generating</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../accessibility_processor.html">Generating intermodal graph and calculating accessibility matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../city.html">City initialization and methods</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Methods</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="accessibility.html">Accessibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="connectivity.html">Connectivity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="diversity.html">Diversity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="centrality.html">Centrality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="spacematrix.html">Spacematrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="land_use_prediction.html">LandUse prediction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vacant_area.html">Vacant Area</a></li>
+<li class="toctree-l3"><a class="reference internal" href="provision.html">Provision</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Annealing optimizer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Prepare-city">Prepare city</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Method">Method</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="integration.html">Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../cases/index.html">Cases</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about_us.html">About us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BlocksNet</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Examples</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Methods</a></li>
+      <li class="breadcrumb-item active">Annealing optimizer</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/examples/methods/annealing_optimizer.nblink.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Annealing-optimizer">
+<h1>Annealing optimizer<a class="headerlink" href="#Annealing-optimizer" title="Permalink to this heading"></a></h1>
+<p>The optimizer is used to optimize city blocks of certain land uses by building services of predefined capacity and area.</p>
+<section id="Prepare-city">
+<h2>Prepare city<a class="headerlink" href="#Prepare-city" title="Permalink to this heading"></a></h2>
+<p>The method is time consuming and aimed to work with smaller territories, so we make a smaller model.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from blocksnet import City, AnnealingOptimizer
+
+city = City.from_pickle(&#39;../model.pickle&#39;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>blocks = city.get_blocks_gdf(True)
+nearest_blocks = blocks.sjoin_nearest(blocks[blocks.index == 1445], distance_col=&#39;distance&#39;)
+nearest_blocks = nearest_blocks[nearest_blocks[&#39;distance&#39;]&lt;=1000]
+nearest_blocks.plot().set_axis_off()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/examples_methods_annealing_optimizer_2_0.png" src="../../_images/examples_methods_annealing_optimizer_2_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>city._blocks = {i:city[i] for i in nearest_blocks.index}
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Method">
+<h2>Method<a class="headerlink" href="#Method" title="Permalink to this heading"></a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import random
+from blocksnet import LandUse
+from blocksnet.method.annealing_optimizer import LU_FSIS, LU_GSIS
+
+ao = AnnealingOptimizer(city_model=city)
+blocks_lu = {block.id : random.choice(list(LandUse)) for block in city.blocks}
+blocks_fsi = {b_id : LU_FSIS[lu][0] for b_id, lu in blocks_lu.items()}
+blocks_gsi = {b_id : LU_GSIS[lu][0] for b_id, lu in blocks_lu.items()}
+service_types = {st.name : 1/len(city.service_types) for st in city.service_types}
+X, indicators, value, provisions = ao.calculate(blocks_lu, blocks_fsi, blocks_gsi, service_types, rate=0.95, max_iter=10_000)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Value : 0.464:  11%|█         | 1065/10000 [02:46&lt;23:15,  6.40it/s]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(&#39;Best objective value:&#39;, value)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Best objective value: 0.46475854673870937
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>{st : round(value,2)  for st,value in provisions.items()}
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;school&#39;: 0.68,
+ &#39;kindergarten&#39;: 0.22,
+ &#39;hospital&#39;: 1.0,
+ &#39;polyclinic&#39;: 0.34,
+ &#39;pitch&#39;: 0.0,
+ &#39;swimming_pool&#39;: 0.95,
+ &#39;stadium&#39;: 1.0,
+ &#39;theatre&#39;: 1.0,
+ &#39;museum&#39;: 1.0,
+ &#39;cinema&#39;: 1.0,
+ &#39;mall&#39;: 0.88,
+ &#39;convenience&#39;: 0.18,
+ &#39;supermarket&#39;: 0.5,
+ &#39;cemetery&#39;: 0.0,
+ &#39;religion&#39;: 1.0,
+ &#39;market&#39;: 0.84,
+ &#39;bowling_alley&#39;: 1.0,
+ &#39;university&#39;: 1.0,
+ &#39;playground&#39;: 0.09,
+ &#39;pharmacy&#39;: 0.79,
+ &#39;fuel&#39;: 0.5,
+ &#39;beach&#39;: 0.0,
+ &#39;train_building&#39;: 1.0,
+ &#39;bank&#39;: 0.51,
+ &#39;lawyer&#39;: 0.88,
+ &#39;cafe&#39;: 0.34,
+ &#39;subway_entrance&#39;: 0.45,
+ &#39;multifunctional_center&#39;: 0.03,
+ &#39;hairdresser&#39;: 0.47,
+ &#39;restaurant&#39;: 0.69,
+ &#39;bar&#39;: 0.46,
+ &#39;park&#39;: 0.0,
+ &#39;government&#39;: 1.0,
+ &#39;recruitment&#39;: 1.0,
+ &#39;hotel&#39;: 1.0,
+ &#39;zoo&#39;: 0.0,
+ &#39;circus&#39;: 0.0,
+ &#39;post&#39;: 0.13,
+ &#39;police&#39;: 0.0,
+ &#39;dog_park&#39;: 0.65,
+ &#39;hostel&#39;: 0.34,
+ &#39;bakery&#39;: 0.5,
+ &#39;parking&#39;: 0.02,
+ &#39;guest_house&#39;: 0.0,
+ &#39;reserve&#39;: 0.0,
+ &#39;sanatorium&#39;: 1.0,
+ &#39;embankment&#39;: 0.0,
+ &#39;machine-building_plant&#39;: 1.0,
+ &#39;brewery&#39;: 0.29,
+ &#39;woodworking_plant&#39;: 1.0,
+ &#39;oil_refinery&#39;: 0.0,
+ &#39;plant_of_building_materials&#39;: 0.79,
+ &#39;wastewater_plant&#39;: 0.0,
+ &#39;water_works&#39;: 0.0,
+ &#39;substation&#39;: 0,
+ &#39;train_station&#39;: 0.24,
+ &#39;bus_station&#39;: 0.26,
+ &#39;bus_stop&#39;: 0.07,
+ &#39;pier&#39;: 1.0,
+ &#39;animal_shelter&#39;: 0.07,
+ &#39;military_kom&#39;: 1.0,
+ &#39;prison&#39;: 0.0,
+ &#39;landfill&#39;: 0.0,
+ &#39;plant_nursery&#39;: 0.0,
+ &#39;greenhouse_complex&#39;: 0.0,
+ &#39;warehouse&#39;: 0.5}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ao.to_bricks_df(X).head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>block_id</th>
+      <th>service_type</th>
+      <th>is_integrated</th>
+      <th>area</th>
+      <th>capacity</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>4</th>
+      <td>39</td>
+      <td>polyclinic</td>
+      <td>False</td>
+      <td>1400.0</td>
+      <td>150</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>28</th>
+      <td>39</td>
+      <td>parking</td>
+      <td>False</td>
+      <td>4750.0</td>
+      <td>190</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>58</th>
+      <td>39</td>
+      <td>market</td>
+      <td>False</td>
+      <td>6000.0</td>
+      <td>8000</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>82</th>
+      <td>39</td>
+      <td>school</td>
+      <td>False</td>
+      <td>4000.0</td>
+      <td>300</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>96</th>
+      <td>39</td>
+      <td>museum</td>
+      <td>True</td>
+      <td>1300.0</td>
+      <td>1000</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>ao.to_gdf(X, indicators).head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>population</th>
+      <th>mall</th>
+      <th>plant_of_building_materials</th>
+      <th>polyclinic</th>
+      <th>playground</th>
+      <th>post</th>
+      <th>pier</th>
+      <th>landfill</th>
+      <th>kindergarten</th>
+      <th>animal_shelter</th>
+      <th>...</th>
+      <th>greenhouse_complex</th>
+      <th>reserve</th>
+      <th>bar</th>
+      <th>oil_refinery</th>
+      <th>bakery</th>
+      <th>multifunctional_center</th>
+      <th>embankment</th>
+      <th>hostel</th>
+      <th>geometry</th>
+      <th>land_use</th>
+    </tr>
+    <tr>
+      <th>block_id</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>39</th>
+      <td>1472</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>150.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>POLYGON ((352493.392 6644174.577, 352480.316 6...</td>
+      <td>residential</td>
+    </tr>
+    <tr>
+      <th>40</th>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>POLYGON ((352846.893 6643739.658, 352854.917 6...</td>
+      <td>transport</td>
+    </tr>
+    <tr>
+      <th>41</th>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>POLYGON ((352713.398 6643353.609, 352656.125 6...</td>
+      <td>business</td>
+    </tr>
+    <tr>
+      <th>42</th>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>POLYGON ((352661.968 6643879.720, 352637.303 6...</td>
+      <td>transport</td>
+    </tr>
+    <tr>
+      <th>43</th>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>800.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>...</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>0.0</td>
+      <td>POLYGON ((353921.529 6644728.862, 353829.106 6...</td>
+      <td>recreation</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 69 columns</p>
+</div></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="provision.html" class="btn btn-neutral float-left" title="Provision" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="integration.html" class="btn btn-neutral float-right" title="Integration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023-2024, IDU.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

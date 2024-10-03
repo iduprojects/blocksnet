@@ -1,0 +1,29 @@
+blocksnet.method.vacant\_area
+=============================
+
+.. automodule:: blocksnet.method.vacant_area
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      VacantArea
+   
+   
+
+   
+   
+   
+
+
+

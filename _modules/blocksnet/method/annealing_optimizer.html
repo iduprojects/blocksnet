@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>blocksnet.method.annealing_optimizer &mdash; BlocksNet 0.0.11 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            BlocksNet
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../blocksnet/index.html">BlocksNet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about_us.html">About us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BlocksNet</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">blocksnet.method.annealing_optimizer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for blocksnet.method.annealing_optimizer</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module providing class for simulated annealing optimization of blocks services constrained by land uses.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span> <span class="nn">.base_method</span> <span class="kn">import</span> <span class="n">BaseMethod</span>
+<span class="kn">from</span> <span class="nn">..models</span> <span class="kn">import</span> <span class="n">Block</span><span class="p">,</span> <span class="n">ServiceBrick</span><span class="p">,</span> <span class="n">ServiceType</span><span class="p">,</span> <span class="n">LandUse</span>
+<span class="kn">from</span> <span class="nn">.provision</span> <span class="kn">import</span> <span class="n">Provision</span>
+
+<span class="n">VACANT_AREA_COEF</span> <span class="o">=</span> <span class="mf">0.8</span>
+<span class="n">LIVING_AREA_DEMAND</span> <span class="o">=</span> <span class="mi">20</span>
+
+<span class="c1"># fsi is build floor area per site area</span>
+<span class="n">LU_FSIS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">RESIDENTIAL</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">BUSINESS</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">RECREATION</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">SPECIAL</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">INDUSTRIAL</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">AGRICULTURE</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">TRANSPORT</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="c1"># gsi is footprint area per site area</span>
+<span class="n">LU_GSIS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">RESIDENTIAL</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">BUSINESS</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">RECREATION</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">SPECIAL</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">INDUSTRIAL</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">AGRICULTURE</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">TRANSPORT</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">),</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="Variable"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.annealing_optimizer.html#blocksnet.method.annealing_optimizer.Variable">[docs]</a><span class="k">class</span> <span class="nc">Variable</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents a variable for optimization in a given block with a specific service type and brick.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    block : Block</span>
+<span class="sd">        The block where the service is located.</span>
+<span class="sd">    service_type : ServiceType</span>
+<span class="sd">        The type of service provided.</span>
+<span class="sd">    brick : ServiceBrick</span>
+<span class="sd">        The brick representing the service&#39;s characteristics.</span>
+<span class="sd">    value : int, optional</span>
+<span class="sd">        The quantity of the service brick, by default 0.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block</span><span class="p">:</span> <span class="n">Block</span><span class="p">,</span> <span class="n">service_type</span><span class="p">:</span> <span class="n">ServiceType</span><span class="p">,</span> <span class="n">brick</span><span class="p">:</span> <span class="n">ServiceBrick</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a Variable instance.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        block : Block</span>
+<span class="sd">            The block where the service is located.</span>
+<span class="sd">        service_type : ServiceType</span>
+<span class="sd">            The type of service provided.</span>
+<span class="sd">        brick : ServiceBrick</span>
+<span class="sd">            The brick representing the service&#39;s characteristics.</span>
+<span class="sd">        value : int, optional</span>
+<span class="sd">            The quantity of the service brick, by default 0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">block</span> <span class="o">=</span> <span class="n">block</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service_type</span> <span class="o">=</span> <span class="n">service_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">brick</span> <span class="o">=</span> <span class="n">brick</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">capacity</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the total capacity of the service brick in the block.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            The total capacity of the service brick.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">brick</span><span class="o">.</span><span class="n">capacity</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">area</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the total area occupied by the service brick.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            The total area occupied by the service brick.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">brick</span><span class="o">.</span><span class="n">area</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+
+<div class="viewcode-block" id="Variable.to_dict"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.annealing_optimizer.html#blocksnet.method.annealing_optimizer.Variable.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts the Variable instance to a dictionary representation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            A dictionary containing the block ID, service type, brick capacity, brick area, whether the brick is integrated,</span>
+<span class="sd">            and the value of the brick.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;block_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">block</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="s2">&quot;service_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">service_type</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;capacity&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">brick</span><span class="o">.</span><span class="n">capacity</span><span class="p">,</span>
+            <span class="s2">&quot;area&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">brick</span><span class="o">.</span><span class="n">area</span><span class="p">,</span>
+            <span class="s2">&quot;is_integrated&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">brick</span><span class="o">.</span><span class="n">is_integrated</span><span class="p">,</span>
+            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="p">}</span></div></div>
+
+
+<div class="viewcode-block" id="Indicator"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.annealing_optimizer.html#blocksnet.method.annealing_optimizer.Indicator">[docs]</a><span class="k">class</span> <span class="nc">Indicator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents indicators for a block based on land use and spatial indices.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    block : Block</span>
+<span class="sd">        The block being evaluated.</span>
+<span class="sd">    land_use : LandUse</span>
+<span class="sd">        The type of land use for the block.</span>
+<span class="sd">    fsi : float</span>
+<span class="sd">        The Floor Space Index (FSI) of the block.</span>
+<span class="sd">    gsi : float</span>
+<span class="sd">        The Ground Space Index (GSI) of the block.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block</span><span class="p">:</span> <span class="n">Block</span><span class="p">,</span> <span class="n">land_use</span><span class="p">:</span> <span class="n">LandUse</span><span class="p">,</span> <span class="n">fsi</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">gsi</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes an Indicator instance.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        block : Block</span>
+<span class="sd">            The block being evaluated.</span>
+<span class="sd">        land_use : LandUse</span>
+<span class="sd">            The type of land use for the block.</span>
+<span class="sd">        fsi : float</span>
+<span class="sd">            The Floor Space Index (FSI) of the block.</span>
+<span class="sd">        gsi : float</span>
+<span class="sd">            The Ground Space Index (GSI) of the block.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">block</span> <span class="o">=</span> <span class="n">block</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">land_use</span> <span class="o">=</span> <span class="n">land_use</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fsi</span> <span class="o">=</span> <span class="n">fsi</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gsi</span> <span class="o">=</span> <span class="n">gsi</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">site_area</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the site area of the block.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The site area of the block.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">block</span><span class="o">.</span><span class="n">site_area</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">footprint_area</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the footprint area of the block based on the GSI.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The footprint area of the block.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_area</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">gsi</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">build_floor_area</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the buildable floor area of the block based on the FSI.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The buildable floor area of the block.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_area</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">fsi</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">integrated_area</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determines the integrated area of the block based on land use.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The integrated area of the block.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">land_use</span> <span class="o">==</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">RESIDENTIAL</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">footprint_area</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_floor_area</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">non_integrated_area</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the non-integrated area of the block.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The non-integrated area of the block.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">VACANT_AREA_COEF</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_area</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">footprint_area</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">living_area</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determines the living area of the block based on land use.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The living area of the block. Returns 0 if land use is not residential.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">land_use</span> <span class="o">==</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">RESIDENTIAL</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_floor_area</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrated_area</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">population</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Estimates the population of the block based on living area and demand.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            The estimated population of the block.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">living_area</span> <span class="o">/</span> <span class="n">LIVING_AREA_DEMAND</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Indicator.to_dict"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.annealing_optimizer.html#blocksnet.method.annealing_optimizer.Indicator.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts the Indicator instance to a dictionary representation.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            A dictionary containing block ID, site area, land use, footprint area, build floor area, integrated area,</span>
+<span class="sd">            non-integrated area, living area, and population.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;block_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">block</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="s2">&quot;site_area&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_area</span><span class="p">,</span>
+            <span class="s2">&quot;land_use&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">land_use</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="s2">&quot;footprint_area&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">footprint_area</span><span class="p">,</span>
+            <span class="s2">&quot;build_floor_area&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_floor_area</span><span class="p">,</span>
+            <span class="s2">&quot;integrated_area&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">integrated_area</span><span class="p">,</span>
+            <span class="s2">&quot;non_integrated_area&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_integrated_area</span><span class="p">,</span>
+            <span class="s2">&quot;living_area&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">living_area</span><span class="p">,</span>
+            <span class="s2">&quot;population&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">population</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="k">else</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">res</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span></div></div>
+
+
+<div class="viewcode-block" id="AnnealingOptimizer"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.annealing_optimizer.html#blocksnet.method.annealing_optimizer.AnnealingOptimizer">[docs]</a><span class="k">class</span> <span class="nc">AnnealingOptimizer</span><span class="p">(</span><span class="n">BaseMethod</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Services optimizer using simulated annealing to maximize scenario provision objective function by building certain services.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    on_iteration : Callable[[int, list[Variable], dict[int, Indicator], float], None] | None</span>
+<span class="sd">        A callback function to be called after each iteration with the current iteration number,</span>
+<span class="sd">        the current list of variables, indicators, and the best value found so far.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">on_iteration</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Variable</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Indicator</span><span class="p">],</span> <span class="nb">float</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="AnnealingOptimizer._check_constraints"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.annealing_optimizer.html#blocksnet.method.annealing_optimizer.AnnealingOptimizer._check_constraints">[docs]</a>    <span class="k">def</span> <span class="nf">_check_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">indicators</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if the current solution satisfies all constraints.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : list[Variable]</span>
+<span class="sd">            List of variables representing the current solution.</span>
+<span class="sd">        indicators : dict[int, Indicator]</span>
+<span class="sd">            Dictionary mapping block IDs to their corresponding indicators.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if all constraints are satisfied, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_bricks_df</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;integrated_area&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;area&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;is_integrated&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;non_integrated_area&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;area&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span><span class="p">[</span><span class="s2">&quot;is_integrated&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;block_id&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">({</span><span class="s2">&quot;integrated_area&quot;</span><span class="p">:</span> <span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;non_integrated_area&quot;</span><span class="p">:</span> <span class="s2">&quot;sum&quot;</span><span class="p">})</span>
+
+        <span class="k">for</span> <span class="n">block_id</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+
+            <span class="n">indicator</span> <span class="o">=</span> <span class="n">indicators</span><span class="p">[</span><span class="n">block_id</span><span class="p">]</span>
+
+            <span class="n">integrated_area</span> <span class="o">=</span> <span class="n">indicator</span><span class="o">.</span><span class="n">integrated_area</span>
+            <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">block_id</span><span class="p">,</span> <span class="s2">&quot;integrated_area&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">integrated_area</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">block_id</span><span class="p">,</span> <span class="s2">&quot;non_integrated_area&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">integrated_area</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="AnnealingOptimizer._perturb"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.annealing_optimizer.html#blocksnet.method.annealing_optimizer.AnnealingOptimizer._perturb">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_perturb</span><span class="p">(</span><span class="n">X</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Variable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Variable</span><span class="p">],</span> <span class="n">ServiceType</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perturbs the current solution by modifying a randomly chosen variable.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : list[Variable]</span>
+<span class="sd">            List of variables representing the current solution.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple[list[Variable], ServiceType]</span>
+<span class="sd">            A tuple containing the perturbed list of variables and the service type of the perturbed variable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_X</span> <span class="o">=</span> <span class="p">[</span><span class="n">Variable</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">block</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">service_type</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">brick</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">new_X</span><span class="p">)</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">value</span> <span class="o">+=</span> <span class="n">delta</span>
+        <span class="k">return</span> <span class="n">new_X</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">service_type</span></div>
+
+<div class="viewcode-block" id="AnnealingOptimizer._generate_initial_X"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.annealing_optimizer.html#blocksnet.method.annealing_optimizer.AnnealingOptimizer._generate_initial_X">[docs]</a>    <span class="k">def</span> <span class="nf">_generate_initial_X</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blocks_lu</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">LandUse</span><span class="p">],</span> <span class="n">service_types</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Variable</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates an initial list of variables for the optimization.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        blocks_lu : dict[int, LandUse]</span>
+<span class="sd">            Dictionary mapping block IDs to their corresponding land uses.</span>
+<span class="sd">        service_types : dict[str, float]</span>
+<span class="sd">            Dictionary mapping service type names to their weights.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list[Variable]</span>
+<span class="sd">            A list of variables representing the initial solution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">block_id</span><span class="p">,</span> <span class="n">land_use</span> <span class="ow">in</span> <span class="n">blocks_lu</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">city_model</span><span class="p">[</span><span class="n">block_id</span><span class="p">]</span>
+            <span class="n">user_service_types</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">city_model</span><span class="p">[</span><span class="n">st_name</span><span class="p">]</span> <span class="k">for</span> <span class="n">st_name</span> <span class="ow">in</span> <span class="n">service_types</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+            <span class="n">lu_service_types</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">city_model</span><span class="o">.</span><span class="n">get_land_use_service_types</span><span class="p">(</span><span class="n">land_use</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">service_type</span> <span class="ow">in</span> <span class="n">user_service_types</span> <span class="o">&amp;</span> <span class="n">lu_service_types</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">brick</span> <span class="ow">in</span> <span class="n">service_type</span><span class="o">.</span><span class="n">bricks</span><span class="p">:</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span> <span class="n">service_type</span><span class="o">=</span><span class="n">service_type</span><span class="p">,</span> <span class="n">brick</span><span class="o">=</span><span class="n">brick</span><span class="p">)</span>
+                    <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X</span></div>
+
+<div class="viewcode-block" id="AnnealingOptimizer._generate_indicators"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.annealing_optimizer.html#blocksnet.method.annealing_optimizer.AnnealingOptimizer._generate_indicators">[docs]</a>    <span class="k">def</span> <span class="nf">_generate_indicators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blocks</span><span class="p">,</span> <span class="n">fsis</span><span class="p">,</span> <span class="n">gsis</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Indicator</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates indicators for each block based on the provided data.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        blocks : dict[int, LandUse]</span>
+<span class="sd">            Dictionary mapping block IDs to their corresponding land uses.</span>
+<span class="sd">        fsis : dict[int, float]</span>
+<span class="sd">            Dictionary mapping block IDs to their Floor Space Index (FSI) values.</span>
+<span class="sd">        gsis : dict[int, float]</span>
+<span class="sd">            Dictionary mapping block IDs to their Ground Space Index (GSI) values.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict[int, Indicator]</span>
+<span class="sd">            A dictionary mapping block IDs to their corresponding indicators.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">b_id</span><span class="p">:</span> <span class="n">Indicator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">city_model</span><span class="p">[</span><span class="n">b_id</span><span class="p">],</span> <span class="n">blocks</span><span class="p">[</span><span class="n">b_id</span><span class="p">],</span> <span class="n">fsis</span><span class="p">[</span><span class="n">b_id</span><span class="p">],</span> <span class="n">gsis</span><span class="p">[</span><span class="n">b_id</span><span class="p">])</span> <span class="k">for</span> <span class="n">b_id</span> <span class="ow">in</span> <span class="n">blocks</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span></div>
+
+<div class="viewcode-block" id="AnnealingOptimizer.to_gdf"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.annealing_optimizer.html#blocksnet.method.annealing_optimizer.AnnealingOptimizer.to_gdf">[docs]</a>    <span class="k">def</span> <span class="nf">to_gdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Variable</span><span class="p">],</span> <span class="n">indicators</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Indicator</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts the list of variables and indicators into a GeoDataFrame.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : list[Variable]</span>
+<span class="sd">            List of variables representing the current solution.</span>
+<span class="sd">        indicators : dict[int, Indicator]</span>
+<span class="sd">            Dictionary mapping block IDs to their corresponding indicators.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        gpd.GeoDataFrame</span>
+<span class="sd">            A GeoDataFrame containing optimization result data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_df</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">indicators</span><span class="p">)</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;geometry&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">city_model</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;land_use&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">indicators</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">land_use</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">city_model</span><span class="o">.</span><span class="n">crs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AnnealingOptimizer.to_bricks_df"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.annealing_optimizer.html#blocksnet.method.annealing_optimizer.AnnealingOptimizer.to_bricks_df">[docs]</a>    <span class="k">def</span> <span class="nf">to_bricks_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Variable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts the list of variables into a DataFrame representing the bricks.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : list[Variable]</span>
+<span class="sd">            List of variables representing the current solution.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            A DataFrame containing data about the bricks in the solution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">xs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;block_id&quot;</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">block</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="s2">&quot;service_type&quot;</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">service_type</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="s2">&quot;is_integrated&quot;</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">brick</span><span class="o">.</span><span class="n">is_integrated</span><span class="p">,</span>
+                <span class="s2">&quot;area&quot;</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">brick</span><span class="o">.</span><span class="n">area</span><span class="p">,</span>
+                <span class="s2">&quot;capacity&quot;</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">brick</span><span class="o">.</span><span class="n">capacity</span><span class="p">,</span>
+                <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span>
+        <span class="p">]</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">xs</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="AnnealingOptimizer._get_clear_df"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.annealing_optimizer.html#blocksnet.method.annealing_optimizer.AnnealingOptimizer._get_clear_df">[docs]</a>    <span class="k">def</span> <span class="nf">_get_clear_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blocks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructs a DataFrame for provision assessment so the blocks being changed are treated as cleared.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        blocks : list[int]</span>
+<span class="sd">            List of changing blocks ids.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            A DataFrame containing information related to blocks being changed for provision assessment.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">gdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">city_model</span><span class="o">.</span><span class="n">get_blocks_gdf</span><span class="p">()</span>
+        <span class="n">gdf</span> <span class="o">=</span> <span class="n">gdf</span><span class="p">[</span><span class="n">gdf</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">blocks</span><span class="p">)]</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">gdf</span><span class="p">[[</span><span class="s2">&quot;population&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;population&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;population&quot;</span><span class="p">]</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="p">[</span><span class="n">column</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">gdf</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="s2">&quot;capacity_&quot;</span> <span class="ow">in</span> <span class="n">column</span><span class="p">]:</span>
+            <span class="n">st_name</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">removeprefix</span><span class="p">(</span><span class="s2">&quot;capacity_&quot;</span><span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">st_name</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">gdf</span><span class="p">[</span><span class="n">column</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">df</span></div>
+
+<div class="viewcode-block" id="AnnealingOptimizer.to_df"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.annealing_optimizer.html#blocksnet.method.annealing_optimizer.AnnealingOptimizer.to_df">[docs]</a>    <span class="k">def</span> <span class="nf">to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Variable</span><span class="p">],</span> <span class="n">indicators</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Indicator</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts the list of variables and indicators into a DataFrame.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : list[Variable]</span>
+<span class="sd">            List of variables representing the current solution.</span>
+<span class="sd">        indicators : dict[int, Indicator]</span>
+<span class="sd">            Dictionary mapping block IDs to their corresponding indicators.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            A DataFrame containing data about the blocks and their service capacities.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">service_types</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="o">.</span><span class="n">service_type</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span><span class="p">}</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;block_id&quot;</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">block</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                    <span class="s2">&quot;population&quot;</span><span class="p">:</span> <span class="n">indicators</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">block</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">population</span><span class="p">,</span>
+                    <span class="n">x</span><span class="o">.</span><span class="n">service_type</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">capacity</span><span class="p">,</span>
+                <span class="p">}</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">X</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;block_id&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">({</span><span class="s2">&quot;population&quot;</span><span class="p">:</span> <span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">st</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="s2">&quot;sum&quot;</span> <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="n">service_types</span><span class="p">}})</span></div>
+
+<div class="viewcode-block" id="AnnealingOptimizer.calculate"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.annealing_optimizer.html#blocksnet.method.annealing_optimizer.AnnealingOptimizer.calculate">[docs]</a>    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">blocks_lu</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">LandUse</span><span class="p">],</span>
+        <span class="n">blocks_fsi</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="n">blocks_gsi</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="n">service_types</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="n">t_max</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="n">t_min</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span>
+        <span class="n">rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.95</span><span class="p">,</span>
+        <span class="n">max_iter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Executes the services optimization process based on simulated annealing for provided service types weights and blocks landuses.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        blocks_lu : dict[int, LandUse]</span>
+<span class="sd">            Dictionary mapping block IDs to their corresponding land uses.</span>
+<span class="sd">        blocks_fsi : dict[int, float]</span>
+<span class="sd">            Dictionary mapping block IDs to their Floor Space Index (FSI) values.</span>
+<span class="sd">        blocks_gsi : dict[int, float]</span>
+<span class="sd">            Dictionary mapping block IDs to their Ground Space Index (GSI) values.</span>
+<span class="sd">        service_types : dict[str, float]</span>
+<span class="sd">            Dictionary mapping service type names to their weights.</span>
+<span class="sd">        t_max : float, optional</span>
+<span class="sd">            The maximum temperature for the annealing process, by default 100.</span>
+<span class="sd">        t_min : float, optional</span>
+<span class="sd">            The minimum temperature for the annealing process, by default 1e-3.</span>
+<span class="sd">        rate : float, optional</span>
+<span class="sd">            The cooling rate of the temperature, by default 0.95.</span>
+<span class="sd">        max_iter : int, optional</span>
+<span class="sd">            The maximum number of iterations, by default 1000.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple</span>
+<span class="sd">            A tuple containing the best solution found, the indicators, the best value, and the provision values for each service type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">indicators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_indicators</span><span class="p">(</span><span class="n">blocks_lu</span><span class="p">,</span> <span class="n">blocks_fsi</span><span class="p">,</span> <span class="n">blocks_gsi</span><span class="p">)</span>
+
+        <span class="n">best_X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_initial_X</span><span class="p">(</span><span class="n">blocks_lu</span><span class="p">,</span> <span class="n">service_types</span><span class="p">)</span>
+        <span class="n">best_value</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">clear_df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_clear_df</span><span class="p">(</span><span class="n">blocks_lu</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="n">prov</span> <span class="o">=</span> <span class="n">Provision</span><span class="p">(</span><span class="n">city_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">city_model</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">calculate_provision</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">service_type</span><span class="p">):</span>
+            <span class="n">update_df</span> <span class="o">=</span> <span class="n">clear_df</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_df</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">indicators</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">update_df</span><span class="p">[</span><span class="n">service_type</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">0</span>
+            <span class="n">gdf</span> <span class="o">=</span> <span class="n">prov</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">service_type</span><span class="p">,</span> <span class="n">update_df</span><span class="p">,</span> <span class="n">self_supply</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">prov</span><span class="o">.</span><span class="n">total</span><span class="p">(</span><span class="n">gdf</span><span class="p">)</span>
+
+        <span class="n">provisions</span> <span class="o">=</span> <span class="p">{</span><span class="n">st</span><span class="p">:</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="n">service_types</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+
+        <span class="k">def</span> <span class="nf">objective</span><span class="p">():</span>
+            <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">provisions</span><span class="p">[</span><span class="n">st</span><span class="p">]</span> <span class="o">*</span> <span class="n">w</span> <span class="k">for</span> <span class="n">st</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">service_types</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+
+        <span class="c1"># Начальная температура</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">t_max</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="n">pbar</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+                <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">pbar</span><span class="o">.</span><span class="n">set_description</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Value : </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">best_value</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_iteration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">on_iteration</span><span class="p">(</span><span class="n">iteration</span><span class="p">,</span> <span class="n">best_X</span><span class="p">,</span> <span class="n">indicators</span><span class="p">,</span> <span class="n">best_value</span><span class="p">)</span>
+
+            <span class="c1"># Генерируем новое решение</span>
+            <span class="n">X</span><span class="p">,</span> <span class="n">st</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_perturb</span><span class="p">(</span><span class="n">best_X</span><span class="p">)</span>
+
+            <span class="c1"># Проверка ограничений</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_constraints</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">indicators</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># recalculate changed provision</span>
+            <span class="n">provisions</span><span class="p">[</span><span class="n">st</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">calculate_provision</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">st</span><span class="p">)</span>
+
+            <span class="c1"># Вычисляем значение целевой функции</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">objective</span><span class="p">()</span>
+
+            <span class="c1"># Если новое решение лучше, принимаем его</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="n">best_value</span><span class="p">:</span>
+                <span class="n">best_value</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="n">best_X</span> <span class="o">=</span> <span class="n">X</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Принимаем худшее решение с вероятностью, зависящей от температуры</span>
+                <span class="n">delta</span> <span class="o">=</span> <span class="n">value</span> <span class="o">-</span> <span class="n">best_value</span>
+                <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">delta</span> <span class="o">/</span> <span class="n">T</span><span class="p">):</span>
+                    <span class="n">best_value</span> <span class="o">=</span> <span class="n">value</span>
+                    <span class="n">best_X</span> <span class="o">=</span> <span class="n">X</span>
+
+            <span class="c1"># Охлаждаем температуру</span>
+            <span class="n">T</span> <span class="o">=</span> <span class="n">T</span> <span class="o">*</span> <span class="n">rate</span>
+            <span class="k">if</span> <span class="n">T</span> <span class="o">&lt;</span> <span class="n">t_min</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">best_X</span><span class="p">,</span> <span class="n">indicators</span><span class="p">,</span> <span class="n">best_value</span><span class="p">,</span> <span class="n">provisions</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023-2024, IDU.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

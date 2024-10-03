@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>blocksnet.preprocessing.land_use_optimizer &mdash; BlocksNet 0.0.11 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            BlocksNet
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../blocksnet/index.html">BlocksNet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about_us.html">About us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BlocksNet</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">blocksnet.preprocessing.land_use_optimizer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for blocksnet.preprocessing.land_use_optimizer</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">shapely</span>
+<span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">shapely.ops</span> <span class="kn">import</span> <span class="n">split</span>
+<span class="kn">from</span> <span class="nn">..models.land_use</span> <span class="kn">import</span> <span class="n">LandUse</span>
+<span class="kn">from</span> <span class="nn">..models.schema</span> <span class="kn">import</span> <span class="n">BaseSchema</span>
+<span class="kn">from</span> <span class="nn">..utils.helpers</span> <span class="kn">import</span> <span class="n">get_polygon_aspect_ratio</span>
+
+
+<div class="viewcode-block" id="BlocksSchema"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.preprocessing.land_use_optimizer.html#blocksnet.preprocessing.land_use_optimizer.BlocksSchema">[docs]</a><span class="k">class</span> <span class="nc">BlocksSchema</span><span class="p">(</span><span class="n">BaseSchema</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Schema for validating blocks GeoDataFrame.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    _geom_types : list</span>
+<span class="sd">        List of allowed geometry types for the blocks, default is [shapely.Polygon].</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_geom_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">shapely</span><span class="o">.</span><span class="n">Polygon</span><span class="p">]</span></div>
+
+
+<span class="n">ADJACENCY_RULES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># self adjacency</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">RESIDENTIAL</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">RESIDENTIAL</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">BUSINESS</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">BUSINESS</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">RECREATION</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">RECREATION</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">INDUSTRIAL</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">INDUSTRIAL</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">TRANSPORT</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">TRANSPORT</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">SPECIAL</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">SPECIAL</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">AGRICULTURE</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">AGRICULTURE</span><span class="p">),</span>
+    <span class="c1"># recreation can be adjacent to anything</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">RECREATION</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">SPECIAL</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">RECREATION</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">INDUSTRIAL</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">RECREATION</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">BUSINESS</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">RECREATION</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">AGRICULTURE</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">RECREATION</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">TRANSPORT</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">RECREATION</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">RESIDENTIAL</span><span class="p">),</span>
+    <span class="c1"># residential</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">RESIDENTIAL</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">BUSINESS</span><span class="p">),</span>
+    <span class="c1"># business</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">BUSINESS</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">INDUSTRIAL</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">BUSINESS</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">TRANSPORT</span><span class="p">),</span>
+    <span class="c1"># industrial</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">INDUSTRIAL</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">SPECIAL</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">INDUSTRIAL</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">AGRICULTURE</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">INDUSTRIAL</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">TRANSPORT</span><span class="p">),</span>
+    <span class="c1"># transport</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">TRANSPORT</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">SPECIAL</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">TRANSPORT</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">AGRICULTURE</span><span class="p">),</span>
+    <span class="c1"># special</span>
+    <span class="p">(</span><span class="n">LandUse</span><span class="o">.</span><span class="n">SPECIAL</span><span class="p">,</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">AGRICULTURE</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">RULES_GRAPH</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_edgelist</span><span class="p">(</span><span class="n">ADJACENCY_RULES</span><span class="p">)</span>
+
+<span class="n">AREA_RANGES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">RESIDENTIAL</span><span class="p">:</span> <span class="p">(</span><span class="mi">2_000</span><span class="p">,</span> <span class="mi">100_000</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">BUSINESS</span><span class="p">:</span> <span class="p">(</span><span class="mi">50_000</span><span class="p">,</span> <span class="mi">150_000</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">RECREATION</span><span class="p">:</span> <span class="p">(</span><span class="mi">10_000</span><span class="p">,</span> <span class="mi">1_000_000</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">SPECIAL</span><span class="p">:</span> <span class="p">(</span><span class="mi">50_000</span><span class="p">,</span> <span class="mi">500_000</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">INDUSTRIAL</span><span class="p">:</span> <span class="p">(</span><span class="mi">10_000</span><span class="p">,</span> <span class="mi">800_000</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">AGRICULTURE</span><span class="p">:</span> <span class="p">(</span><span class="mi">300_000</span><span class="p">,</span> <span class="mi">1_000_000</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">TRANSPORT</span><span class="p">:</span> <span class="p">(</span><span class="mi">50_000</span><span class="p">,</span> <span class="mi">500_000</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="n">ASPECT_RATIO_RANGES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">RESIDENTIAL</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">BUSINESS</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">RECREATION</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">SPECIAL</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">INDUSTRIAL</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">AGRICULTURE</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+    <span class="n">LandUse</span><span class="o">.</span><span class="n">TRANSPORT</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="n">BUFFER_MIN</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">BUFFER_STEP</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+
+<div class="viewcode-block" id="LandUseOptimizer"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.preprocessing.land_use_optimizer.html#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer">[docs]</a><span class="k">class</span> <span class="nc">LandUseOptimizer</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Optimizes the allocation of land use within a set of urban blocks.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    blocks : gpd.GeoDataFrame</span>
+<span class="sd">        GeoDataFrame containing the urban blocks with geometry.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        If True, progress is displayed using tqdm (default is True).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">blocks</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">,</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the LandUseOptimizer class by validating and processing the blocks data.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        blocks : gpd.GeoDataFrame</span>
+<span class="sd">            The GeoDataFrame representing the urban blocks.</span>
+<span class="sd">        verbose : bool, optional</span>
+<span class="sd">            Whether to display progress with tqdm (default is True).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">blocks</span> <span class="o">=</span> <span class="n">BlocksSchema</span><span class="p">(</span><span class="n">blocks</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">blocks</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_is_block_large</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
+            <span class="n">blocks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_large_blocks</span><span class="p">(</span><span class="n">blocks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blocks</span> <span class="o">=</span> <span class="n">blocks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adjacency_graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_adjacency_graph</span><span class="p">(</span><span class="n">blocks</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+
+    <span class="c1"># @staticmethod</span>
+    <span class="c1"># def _get_possible_lus(polygon) -&gt; list[LandUse]:</span>
+    <span class="c1">#     ar = get_polygon_aspect_ratio(polygon)</span>
+    <span class="c1">#     area = polygon.area</span>
+    <span class="c1">#     lus = []</span>
+    <span class="c1">#     for lu in list(LandUse):</span>
+    <span class="c1">#         min_area, max_area = AREA_RANGES[lu]</span>
+    <span class="c1">#         min_ar, max_ar = ASPECT_RATIO_RANGES[lu]</span>
+    <span class="c1">#         if ar&gt;=min_ar and ar&lt;=max_ar and area&gt;=min_area and area&lt;=max_area:</span>
+    <span class="c1">#             lus.append(lu)</span>
+    <span class="c1">#     return lus</span>
+
+<div class="viewcode-block" id="LandUseOptimizer._split_polygon"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.preprocessing.land_use_optimizer.html#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._split_polygon">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_split_polygon</span><span class="p">(</span><span class="n">polygon</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">shapely</span><span class="o">.</span><span class="n">GeometryCollection</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Splits a polygon into two parts by cutting along its midpoint.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        polygon : shapely.Polygon</span>
+<span class="sd">            The polygon to split.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        shapely.GeometryCollection</span>
+<span class="sd">            A collection of geometries resulting from the split operation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">min_rect</span> <span class="o">=</span> <span class="n">polygon</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">minimum_rotated_rectangle</span>
+        <span class="n">rect_coords</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">min_rect</span><span class="o">.</span><span class="n">exterior</span><span class="o">.</span><span class="n">coords</span><span class="p">)</span>
+
+        <span class="n">side_lengths</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">((</span><span class="n">rect_coords</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">rect_coords</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">rect_coords</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">rect_coords</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">length_1</span><span class="p">,</span> <span class="n">length_2</span> <span class="o">=</span> <span class="n">side_lengths</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">side_lengths</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">length_1</span> <span class="o">&gt;=</span> <span class="n">length_2</span><span class="p">:</span>
+            <span class="n">long_side_1</span> <span class="o">=</span> <span class="p">[</span><span class="n">rect_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rect_coords</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">long_side_2</span> <span class="o">=</span> <span class="p">[</span><span class="n">rect_coords</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">rect_coords</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">long_side_1</span> <span class="o">=</span> <span class="p">[</span><span class="n">rect_coords</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">rect_coords</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
+            <span class="n">long_side_2</span> <span class="o">=</span> <span class="p">[</span><span class="n">rect_coords</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">rect_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+
+        <span class="c1"># Рассчитываем середину длинной стороны</span>
+        <span class="n">midpoint_1</span> <span class="o">=</span> <span class="p">((</span><span class="n">long_side_1</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">long_side_1</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="n">long_side_1</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">long_side_1</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">midpoint_2</span> <span class="o">=</span> <span class="p">((</span><span class="n">long_side_2</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">long_side_2</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="n">long_side_2</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">long_side_2</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">cutting_line</span> <span class="o">=</span> <span class="n">shapely</span><span class="o">.</span><span class="n">LineString</span><span class="p">([</span><span class="n">midpoint_1</span><span class="p">,</span> <span class="n">midpoint_2</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">split</span><span class="p">(</span><span class="n">polygon</span><span class="p">,</span> <span class="n">cutting_line</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LandUseOptimizer._is_block_large"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.preprocessing.land_use_optimizer.html#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._is_block_large">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_is_block_large</span><span class="p">(</span><span class="n">block_geometry</span><span class="p">:</span> <span class="n">shapely</span><span class="o">.</span><span class="n">Polygon</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determines if a block is too large based on its area and aspect ratio.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        block_geometry : shapely.Polygon</span>
+<span class="sd">            The geometry of the block to evaluate.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if the block exceeds size or aspect ratio constraints, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">area</span> <span class="o">=</span> <span class="n">block_geometry</span><span class="o">.</span><span class="n">area</span>
+        <span class="n">aspect_ratio</span> <span class="o">=</span> <span class="n">get_polygon_aspect_ratio</span><span class="p">(</span><span class="n">block_geometry</span><span class="p">)</span>
+        <span class="n">lus</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">lu</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">LandUse</span><span class="p">):</span>
+            <span class="n">max_area</span> <span class="o">=</span> <span class="n">AREA_RANGES</span><span class="p">[</span><span class="n">lu</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">max_aspect_ratio</span> <span class="o">=</span> <span class="n">ASPECT_RATIO_RANGES</span><span class="p">[</span><span class="n">lu</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">area</span> <span class="o">&lt;=</span> <span class="n">max_area</span> <span class="ow">and</span> <span class="n">aspect_ratio</span> <span class="o">&lt;=</span> <span class="n">max_aspect_ratio</span><span class="p">:</span>
+                <span class="n">lus</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lu</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">lus</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="LandUseOptimizer._split_large_blocks"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.preprocessing.land_use_optimizer.html#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._split_large_blocks">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_split_large_blocks</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">blocks_gdf</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Splits blocks in the GeoDataFrame that are too large according to predefined rules.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        blocks_gdf : gpd.GeoDataFrame</span>
+<span class="sd">            The GeoDataFrame containing block geometries.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        gpd.GeoDataFrame</span>
+<span class="sd">            Updated GeoDataFrame with large blocks split into smaller ones.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">blocks_gdf</span> <span class="o">=</span> <span class="n">blocks_gdf</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">blocks_gdf</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">blocks_gdf</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_split_polygon</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_is_block_large</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">else</span> <span class="n">g</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">blocks_gdf</span><span class="o">.</span><span class="n">explode</span><span class="p">(</span><span class="n">index_parts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LandUseOptimizer._get_adjacency_graph"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.preprocessing.land_use_optimizer.html#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._get_adjacency_graph">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_adjacency_graph</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">blocks_gdf</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">,</span> <span class="n">buffer</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">BUFFER_MIN</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates an adjacency graph of blocks based on their spatial proximity.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        blocks_gdf : gpd.GeoDataFrame</span>
+<span class="sd">            The GeoDataFrame of blocks with geometries.</span>
+<span class="sd">        buffer : float, optional</span>
+<span class="sd">            Buffer size used for detecting intersections (default is BUFFER_MIN).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        nx.Graph</span>
+<span class="sd">            A NetworkX graph representing the adjacency relations between blocks.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">blocks_gdf</span> <span class="o">=</span> <span class="n">blocks_gdf</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">blocks_gdf</span><span class="o">.</span><span class="n">geometry</span> <span class="o">=</span> <span class="n">blocks_gdf</span><span class="o">.</span><span class="n">buffer</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
+        <span class="n">sjoin</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">sjoin</span><span class="p">(</span><span class="n">blocks_gdf</span><span class="p">,</span> <span class="n">blocks_gdf</span><span class="p">,</span> <span class="n">predicate</span><span class="o">=</span><span class="s2">&quot;intersects&quot;</span><span class="p">)</span>
+        <span class="n">edge_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">index_right</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sjoin</span><span class="p">[</span><span class="n">sjoin</span><span class="o">.</span><span class="n">index</span> <span class="o">!=</span> <span class="n">sjoin</span><span class="o">.</span><span class="n">index_right</span><span class="p">][[</span><span class="s2">&quot;index_right&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">edge_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_adjacency_graph</span><span class="p">(</span><span class="n">blocks_gdf</span><span class="p">,</span> <span class="n">buffer</span> <span class="o">+</span> <span class="n">BUFFER_STEP</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">nx</span><span class="o">.</span><span class="n">from_edgelist</span><span class="p">(</span><span class="n">edge_list</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LandUseOptimizer._generate_initial_X"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.preprocessing.land_use_optimizer.html#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._generate_initial_X">[docs]</a>    <span class="k">def</span> <span class="nf">_generate_initial_X</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">LandUse</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates an initial configuration of land uses for the blocks.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict[int, LandUse]</span>
+<span class="sd">            A dictionary mapping block IDs to initial land uses (default is LandUse.RECREATION).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">block_id</span><span class="p">:</span> <span class="n">LandUse</span><span class="o">.</span><span class="n">RECREATION</span> <span class="k">for</span> <span class="n">block_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">blocks</span><span class="o">.</span><span class="n">index</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="LandUseOptimizer._perturb"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.preprocessing.land_use_optimizer.html#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._perturb">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_perturb</span><span class="p">(</span><span class="n">X</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">LandUse</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">LandUse</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perturbs the current land use configuration by randomly changing the land use of one block.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : dict[int, LandUse]</span>
+<span class="sd">            Current land use configuration.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict[int, LandUse]</span>
+<span class="sd">            Modified configuration with one randomly changed land use.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="p">{</span><span class="n">block_id</span><span class="p">:</span> <span class="n">lu</span> <span class="k">for</span> <span class="n">block_id</span><span class="p">,</span> <span class="n">lu</span> <span class="ow">in</span> <span class="n">X</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="n">b_id</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="n">x_lu</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">b_id</span><span class="p">]</span>
+        <span class="n">possible_lus</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">LandUse</span><span class="p">)</span>
+        <span class="n">possible_lus</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">x_lu</span><span class="p">)</span>
+        <span class="n">X</span><span class="p">[</span><span class="n">b_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">possible_lus</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X</span></div>
+
+<div class="viewcode-block" id="LandUseOptimizer._check_adj_rules"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.preprocessing.land_use_optimizer.html#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._check_adj_rules">[docs]</a>    <span class="k">def</span> <span class="nf">_check_adj_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">LandUse</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validates the adjacency rules for the given land use configuration.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : dict[int, LandUse]</span>
+<span class="sd">            Land use configuration to check.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if the configuration satisfies adjacency rules, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjacency_graph</span><span class="o">.</span><span class="n">edges</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">RULES_GRAPH</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">u</span><span class="p">],</span> <span class="n">X</span><span class="p">[</span><span class="n">v</span><span class="p">]):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="LandUseOptimizer._check_area_ranges"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.preprocessing.land_use_optimizer.html#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._check_area_ranges">[docs]</a>    <span class="k">def</span> <span class="nf">_check_area_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">LandUse</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validates that each block&#39;s area falls within the allowed range for its land use.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : dict[int, LandUse]</span>
+<span class="sd">            Land use configuration to check.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if all areas are within valid ranges, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">b_id</span><span class="p">,</span> <span class="n">lu</span> <span class="ow">in</span> <span class="n">X</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">area_min</span><span class="p">,</span> <span class="n">area_max</span> <span class="o">=</span> <span class="n">AREA_RANGES</span><span class="p">[</span><span class="n">lu</span><span class="p">]</span>
+            <span class="n">block_area</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">blocks</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">b_id</span><span class="p">,</span> <span class="s2">&quot;geometry&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">area</span>
+            <span class="k">if</span> <span class="n">block_area</span> <span class="o">&lt;</span> <span class="n">area_min</span> <span class="ow">or</span> <span class="n">block_area</span> <span class="o">&gt;</span> <span class="n">area_max</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="LandUseOptimizer._check_ratio_ranges"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.preprocessing.land_use_optimizer.html#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._check_ratio_ranges">[docs]</a>    <span class="k">def</span> <span class="nf">_check_ratio_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">LandUse</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks whether the aspect ratio of each block falls within the allowed range for its land use.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : dict[int, LandUse]</span>
+<span class="sd">            Land use configuration to check.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if all aspect ratios are valid, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">b_id</span><span class="p">,</span> <span class="n">lu</span> <span class="ow">in</span> <span class="n">X</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">ar</span> <span class="o">=</span> <span class="n">get_polygon_aspect_ratio</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blocks</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">b_id</span><span class="p">,</span> <span class="s2">&quot;geometry&quot;</span><span class="p">])</span>
+            <span class="n">min_ar</span><span class="p">,</span> <span class="n">max_ar</span> <span class="o">=</span> <span class="n">ASPECT_RATIO_RANGES</span><span class="p">[</span><span class="n">lu</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">ar</span> <span class="o">&lt;</span> <span class="n">min_ar</span> <span class="ow">or</span> <span class="n">ar</span> <span class="o">&gt;</span> <span class="n">max_ar</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="LandUseOptimizer.to_shares_dict"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.preprocessing.land_use_optimizer.html#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer.to_shares_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_shares_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">LandUse</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts the land use configuration to a dictionary of land use area shares.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : dict[int, LandUse]</span>
+<span class="sd">            Land use configuration.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pd.DataFrame</span>
+<span class="sd">            A dictionary mapping each land use to its share of the total area.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">gdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_gdf</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">total_area</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">area</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">lu</span><span class="p">:</span> <span class="n">gdf</span><span class="p">[</span><span class="n">gdf</span><span class="o">.</span><span class="n">land_use</span> <span class="o">==</span> <span class="n">lu</span><span class="o">.</span><span class="n">value</span><span class="p">]</span><span class="o">.</span><span class="n">area</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">total_area</span> <span class="k">for</span> <span class="n">lu</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">LandUse</span><span class="p">)}</span></div>
+
+<div class="viewcode-block" id="LandUseOptimizer.to_gdf"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.preprocessing.land_use_optimizer.html#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer.to_gdf">[docs]</a>    <span class="k">def</span> <span class="nf">to_gdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">LandUse</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Converts the land use configuration into a GeoDataFrame with land use labels.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : dict[int, LandUse]</span>
+<span class="sd">            Land use configuration.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        gpd.GeoDataFrame</span>
+<span class="sd">            GeoDataFrame with land use assignments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">gdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">blocks</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;land_use&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">X</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gdf</span></div>
+
+<div class="viewcode-block" id="LandUseOptimizer._objective"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.preprocessing.land_use_optimizer.html#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._objective">[docs]</a>    <span class="k">def</span> <span class="nf">_objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">LandUse</span><span class="p">],</span> <span class="n">lu_shares</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">LandUse</span><span class="p">,</span> <span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the objective function value, which measures deviation from target land use shares.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        X : dict[int, LandUse]</span>
+<span class="sd">            Land use configuration.</span>
+<span class="sd">        lu_shares : dict[LandUse, float]</span>
+<span class="sd">            Target land use shares.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            Sum of squared deviations between actual and target land use shares.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">actual_shares</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_shares_dict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">deviations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">lu</span><span class="p">,</span> <span class="n">share</span> <span class="ow">in</span> <span class="n">lu_shares</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">actual_share</span> <span class="o">=</span> <span class="n">actual_shares</span><span class="p">[</span><span class="n">lu</span><span class="p">]</span>
+            <span class="n">deviation</span> <span class="o">=</span> <span class="p">(</span><span class="n">actual_share</span> <span class="o">-</span> <span class="n">share</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="n">deviations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">deviation</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">deviations</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LandUseOptimizer.run"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.preprocessing.land_use_optimizer.html#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">lu_shares</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">LandUse</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="n">rate</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.99</span><span class="p">,</span>
+        <span class="n">t_max</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="n">t_min</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span>
+        <span class="n">max_iter</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs the optimization algorithm to find the optimal land use configuration.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lu_shares : dict[LandUse, float]</span>
+<span class="sd">            Target shares for each land use, must sum to 1.</span>
+<span class="sd">        rate : float, optional</span>
+<span class="sd">            Cooling rate for the simulated annealing algorithm (default is 0.99).</span>
+<span class="sd">        t_max : float, optional</span>
+<span class="sd">            Initial temperature for simulated annealing (default is 100).</span>
+<span class="sd">        t_min : float, optional</span>
+<span class="sd">            Minimum temperature for simulated annealing (default is 1e-3).</span>
+<span class="sd">        max_iter : int, optional</span>
+<span class="sd">            Maximum number of iterations for the optimization (default is 10000).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple</span>
+<span class="sd">            A tuple containing the best land use configuration, best objective value, list of configurations, and list of objective values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="nb">round</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">lu_shares</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;LandUse shares sum must be  equal 1, got </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="n">lu_shares</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="n">best_X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_initial_X</span><span class="p">()</span>
+        <span class="n">best_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objective</span><span class="p">(</span><span class="n">best_X</span><span class="p">,</span> <span class="n">lu_shares</span><span class="p">)</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">t_max</span>
+
+        <span class="n">Xs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">current_X</span> <span class="o">=</span> <span class="n">best_X</span>
+        <span class="n">current_value</span> <span class="o">=</span> <span class="n">best_value</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="n">pbar</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+                <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">pbar</span><span class="o">.</span><span class="n">set_description</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Value : </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">current_value</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">Xs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_X</span><span class="p">)</span>
+            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_value</span><span class="p">)</span>
+
+            <span class="c1"># Генерируем новое решение</span>
+            <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_perturb</span><span class="p">(</span><span class="n">current_X</span><span class="p">)</span>
+
+            <span class="c1"># Проверка ограничений</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_adj_rules</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="c1"># if not self._check_area_ranges(X):</span>
+            <span class="c1">#   continue</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_ratio_ranges</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Вычисляем значение целевой функции</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objective</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">lu_shares</span><span class="p">)</span>
+
+            <span class="c1"># Если новое решение лучше, принимаем его</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="n">current_value</span><span class="p">:</span>
+                <span class="n">current_value</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="n">current_X</span> <span class="o">=</span> <span class="n">X</span>
+                <span class="c1"># Если оно еще лучше лучшего, то меняем и его</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="n">best_value</span><span class="p">:</span>
+                    <span class="n">best_value</span> <span class="o">=</span> <span class="n">value</span>
+                    <span class="n">best_X</span> <span class="o">=</span> <span class="n">X</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Принимаем худшее решение с вероятностью, зависящей от температуры</span>
+                <span class="n">delta</span> <span class="o">=</span> <span class="n">current_value</span> <span class="o">-</span> <span class="n">value</span>
+                <span class="k">if</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">delta</span> <span class="o">/</span> <span class="n">T</span><span class="p">):</span>
+                    <span class="n">current_value</span> <span class="o">=</span> <span class="n">value</span>
+                    <span class="n">current_X</span> <span class="o">=</span> <span class="n">X</span>
+
+            <span class="c1"># Охлаждаем температуру</span>
+            <span class="n">T</span> <span class="o">=</span> <span class="n">T</span> <span class="o">*</span> <span class="n">rate</span>
+            <span class="k">if</span> <span class="n">T</span> <span class="o">&lt;</span> <span class="n">t_min</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">best_X</span><span class="p">,</span> <span class="n">best_value</span><span class="p">,</span> <span class="n">Xs</span><span class="p">,</span> <span class="n">values</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023-2024, IDU.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

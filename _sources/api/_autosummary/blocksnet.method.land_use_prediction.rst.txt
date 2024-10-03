@@ -1,0 +1,29 @@
+blocksnet.method.land\_use\_prediction
+======================================
+
+.. automodule:: blocksnet.method.land_use_prediction
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      LandUsePrediction
+   
+   
+
+   
+   
+   
+
+
+

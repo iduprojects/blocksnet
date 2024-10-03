@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>blocksnet.method.provision &mdash; BlocksNet 0.0.11 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="blocksnet.method.spacematrix" href="blocksnet.method.spacematrix.html" />
+    <link rel="prev" title="blocksnet.method.population_centrality" href="blocksnet.method.population_centrality.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            BlocksNet
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../blocksnet/index.html">BlocksNet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="blocksnet.preprocessing.html">blocksnet.preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="blocksnet.models.html">blocksnet.models</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="blocksnet.method.html">blocksnet.method</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.accessibility.html">blocksnet.method.accessibility</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.annealing_optimizer.html">blocksnet.method.annealing_optimizer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.base_method.html">blocksnet.method.base_method</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.centrality.html">blocksnet.method.centrality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.connectivity.html">blocksnet.method.connectivity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.diversity.html">blocksnet.method.diversity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.integration.html">blocksnet.method.integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.land_use_prediction.html">blocksnet.method.land_use_prediction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.population_centrality.html">blocksnet.method.population_centrality</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">blocksnet.method.provision</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#blocksnet.method.provision.ProvisionMethod"><code class="docutils literal notranslate"><span class="pre">ProvisionMethod</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blocksnet.method.provision.Provision"><code class="docutils literal notranslate"><span class="pre">Provision</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.spacematrix.html">blocksnet.method.spacematrix</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.method.vacant_area.html">blocksnet.method.vacant_area</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="blocksnet.utils.html">blocksnet.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../about_us.html">About us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BlocksNet</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
+          <li class="breadcrumb-item"><a href="blocksnet.method.html">blocksnet.method</a></li>
+      <li class="breadcrumb-item active">blocksnet.method.provision</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/_autosummary/blocksnet.method.provision.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-blocksnet.method.provision">
+<span id="blocksnet-method-provision"></span><h1>blocksnet.method.provision<a class="headerlink" href="#module-blocksnet.method.provision" title="Permalink to this heading"></a></h1>
+<p>Service type provisions assessment module.</p>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blocksnet.method.provision.Provision" title="blocksnet.method.provision.Provision"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Provision</span></code></a>(*, city_model[, verbose])</p></td>
+<td><p>Class for assessing provision of services to urban areas.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blocksnet.method.provision.ProvisionMethod" title="blocksnet.method.provision.ProvisionMethod"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProvisionMethod</span></code></a>(value)</p></td>
+<td><p>Enum for different methods of service provision assessment.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="blocksnet.method.provision.ProvisionMethod">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blocksnet.method.provision.</span></span><span class="sig-name descname"><span class="pre">ProvisionMethod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/method/provision.html#ProvisionMethod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.provision.ProvisionMethod" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>Enum for different methods of service provision assessment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>GREEDY</strong> (<em>str</em>) – Greedy method for service provision.</p></li>
+<li><p><strong>GRAVITATIONAL</strong> (<em>str</em>) – Linear method for service provision, where distances are taken into account as squares.</p></li>
+<li><p><strong>LINEAR</strong> (<em>str</em>) – Linear method for service provision, where distances are taken into account linearly.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.method.provision.ProvisionMethod.GREEDY">
+<span class="sig-name descname"><span class="pre">GREEDY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'greedy'</span></em><a class="headerlink" href="#blocksnet.method.provision.ProvisionMethod.GREEDY" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.method.provision.ProvisionMethod.GRAVITATIONAL">
+<span class="sig-name descname"><span class="pre">GRAVITATIONAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'gravitational'</span></em><a class="headerlink" href="#blocksnet.method.provision.ProvisionMethod.GRAVITATIONAL" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.method.provision.ProvisionMethod.LINEAR">
+<span class="sig-name descname"><span class="pre">LINEAR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'linear'</span></em><a class="headerlink" href="#blocksnet.method.provision.ProvisionMethod.LINEAR" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blocksnet.method.provision.Provision">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blocksnet.method.provision.</span></span><span class="sig-name descname"><span class="pre">Provision</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">city_model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.city.html#blocksnet.models.city.City" title="blocksnet.models.city.City"><span class="pre">City</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/method/provision.html#Provision"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.provision.Provision" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="blocksnet.method.base_method.html#blocksnet.method.base_method.BaseMethod" title="blocksnet.method.base_method.BaseMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseMethod</span></code></a></p>
+<p>Class for assessing provision of services to urban areas.</p>
+<p>This class provides various methods to evaluate the provision of services
+such as healthcare, education, etc., for a given city model. The provision
+can be assessed using multiple methods like gravitational models, greedy
+allocation, and linear programming-based transportation problem solutions.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.method.provision.Provision.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">gpd.GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(10,</span> <span class="pre">10)</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/provision.html#Provision.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.provision.Provision.plot" title="Permalink to this definition"></a></dt>
+<dd><p>Visualizes provision assessment results for a given GeoDataFrame.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.method.provision.Provision.stat">
+<span class="sig-name descname"><span class="pre">stat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">gpd.GeoDataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/provision.html#Provision.stat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.provision.Provision.stat" title="Permalink to this definition"></a></dt>
+<dd><p>Computes basic statistics of provision (mean, median, min, max) from a GeoDataFrame.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.method.provision.Provision.total">
+<span class="sig-name descname"><span class="pre">total</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">gpd.GeoDataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/provision.html#Provision.total"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.provision.Provision.total" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the total provision ratio from the given GeoDataFrame.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.method.provision.Provision.get_bounds">
+<span class="sig-name descname"><span class="pre">get_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">ServiceType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/provision.html#Provision.get_bounds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.provision.Provision.get_bounds" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the lower and upper bounds of provision for a given service type.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.method.provision.Provision.calculate">
+<span class="sig-name descname"><span class="pre">calculate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">ServiceType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pd.DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#blocksnet.method.provision.ProvisionMethod" title="blocksnet.method.provision.ProvisionMethod"><span class="pre">ProvisionMethod</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">ProvisionMethod.GRAVITATIONAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">self_supply</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">gpd.GeoDataFrame</span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/provision.html#Provision.calculate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.provision.Provision.calculate" title="Permalink to this definition"></a></dt>
+<dd><p>Performs provision assessment for a specified service type and method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linewidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(10,</span> <span class="pre">10)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/method/provision.html#Provision.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Permalink to this definition"></a></dt>
+<dd><p>Visualizes provision assessment results for a given GeoDataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gdf</strong> (<em>geopandas.GeoDataFrame</em>) – GeoDataFrame containing spatial data with provision assessment results.</p></li>
+<li><p><strong>linewidth</strong> (<em>float</em>) – Size of polygons’ borders, by default 0.1.</p></li>
+<li><p><strong>figsize</strong> (<em>tuple</em><em> of </em><em>int</em><em>, </em><em>optional</em>) – Size of the plot in inches, by default (10, 10).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.method.provision.Provision._get_blocks_gdf">
+<span class="sig-name descname"><span class="pre">_get_blocks_gdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">ServiceType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/provision.html#Provision._get_blocks_gdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.provision.Provision._get_blocks_gdf" title="Permalink to this definition"></a></dt>
+<dd><p>Generates a GeoDataFrame of city blocks with updated service capacities and demands.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>service_type</strong> (<a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><em>ServiceType</em></a>) – The service type for which provision assessment is being calculated.</p></li>
+<li><p><strong>update_df</strong> (<em>pandas.DataFrame</em><em>, </em><em>optional</em>) – DataFrame containing updates to population or capacity, by default None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>GeoDataFrame containing the geometry, demand, and capacity for each block.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>geopandas.GeoDataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id1">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/provision.html#Provision.stat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id1" title="Permalink to this definition"></a></dt>
+<dd><p>Computes basic statistics of provision (mean, median, min, max) from a GeoDataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>gdf</strong> (<em>geopandas.GeoDataFrame</em>) – GeoDataFrame containing provision data.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary with keys ‘mean’, ‘median’, ‘min’, and ‘max’ representing provision statistics.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id2">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">total</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/provision.html#Provision.total"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id2" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the total provision by dividing the sum of met demand
+by the total demand for all blocks in the GeoDataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>gdf</strong> (<em>geopandas.GeoDataFrame</em>) – GeoDataFrame containing the columns ‘demand_within’ and ‘demand’,
+representing the met demand and total demand for each block.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The ratio of total met demand to total demand, representing overall provision.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.method.provision.Provision._get_lower_bound">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_get_lower_bound</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/provision.html#Provision._get_lower_bound"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.provision.Provision._get_lower_bound" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the lower bound of provision, assuming each block
+meets its demand up to its capacity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>gdf</strong> (<em>geopandas.GeoDataFrame</em>) – GeoDataFrame containing ‘capacity’ and ‘demand’ columns.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The lower bound of provision as the ratio of the total met demand
+(limited by capacity) to the total demand.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.method.provision.Provision._get_upper_bound">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_get_upper_bound</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/provision.html#Provision._get_upper_bound"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.provision.Provision._get_upper_bound" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the upper bound of provision, assuming total capacity can be
+fully allocated to meet total demand.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>gdf</strong> (<em>geopandas.GeoDataFrame</em>) – GeoDataFrame containing ‘capacity’ and ‘demand’ columns.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The upper bound of provision, calculated as the minimum of the total
+capacity-to-demand ratio or 1 (full provision).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">get_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">ServiceType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/provision.html#Provision.get_bounds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id3" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the lower and upper bounds of provision for a given service type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>service_type</strong> (<a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><em>ServiceType</em></a><em> or </em><em>str</em>) – The service type for which provision bounds are calculated.</p></li>
+<li><p><strong>update_df</strong> (<em>pandas.DataFrame</em><em>, </em><em>optional</em>) – DataFrame containing updates to population or capacity, by default None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple (lower_bound, upper_bound) representing the lower and upper
+bounds of provision.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple of float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">calculate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">ServiceType</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#blocksnet.method.provision.ProvisionMethod" title="blocksnet.method.provision.ProvisionMethod"><span class="pre">ProvisionMethod</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">ProvisionMethod.GRAVITATIONAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">self_supply</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/provision.html#Provision.calculate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id4" title="Permalink to this definition"></a></dt>
+<dd><p>Performs provision assessment for a specified service type and method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>service_type</strong> (<a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><em>ServiceType</em></a><em> or </em><em>str</em>) – The type of service for which the provision is calculated.</p></li>
+<li><p><strong>update_df</strong> (<em>pandas.DataFrame</em><em>, </em><em>optional</em>) – Updated DataFrame for blocks (demand or capacity changes), by default None.</p></li>
+<li><p><strong>method</strong> (<a class="reference internal" href="#blocksnet.method.provision.ProvisionMethod" title="blocksnet.method.provision.ProvisionMethod"><em>ProvisionMethod</em></a><em>, </em><em>optional</em>) – The provision method to be used (GRAVITATIONAL by default).</p></li>
+<li><p><strong>self_supply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, blocks are allowed to meet their own demand directly using their
+own capacity, by default False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>GeoDataFrame with provision data, including ‘demand_within’, ‘demand_left’,
+‘capacity_left’, and ‘provision’.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>geopandas.GeoDataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.method.provision.Provision._lp_provision">
+<span class="sig-name descname"><span class="pre">_lp_provision</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">ServiceType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#blocksnet.method.provision.ProvisionMethod" title="blocksnet.method.provision.ProvisionMethod"><span class="pre">ProvisionMethod</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">selection_range</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/provision.html#Provision._lp_provision"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.provision.Provision._lp_provision" title="Permalink to this definition"></a></dt>
+<dd><p>Solves the provision problem using a Linear Programming (LP) solver.
+Loops itself till capacity or demand left meet 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gdf</strong> (<em>geopandas.GeoDataFrame</em>) – GeoDataFrame containing blocks with demand and capacity.</p></li>
+<li><p><strong>service_type</strong> (<a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><em>ServiceType</em></a>) – The type of service for which provision is being calculated.</p></li>
+<li><p><strong>method</strong> (<a class="reference internal" href="#blocksnet.method.provision.ProvisionMethod" title="blocksnet.method.provision.ProvisionMethod"><em>ProvisionMethod</em></a>) – The method used to calculate provision (LINEAR or GRAVITATIONAL).</p></li>
+<li><p><strong>selection_range</strong> (<em>float</em><em> | </em><em>None</em>) – The accessibility range defining maximum distance between living blocks and service blocks
+in the current problem loop, default None (actually service type accessibility).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Updated GeoDataFrame with provision results, including updates to
+‘demand_within’, ‘demand_without’, ‘demand_left’, and ‘capacity_left’.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>geopandas.GeoDataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.method.provision.Provision._greedy_provision">
+<span class="sig-name descname"><span class="pre">_greedy_provision</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">service_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><span class="pre">ServiceType</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="reference internal" href="../../_modules/blocksnet/method/provision.html#Provision._greedy_provision"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.method.provision.Provision._greedy_provision" title="Permalink to this definition"></a></dt>
+<dd><p>Iteratively assigns demand to the closest available capacity using a greedy method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gdf</strong> (<em>geopandas.GeoDataFrame</em>) – GeoDataFrame containing blocks with demand and capacity.</p></li>
+<li><p><strong>service_type</strong> (<a class="reference internal" href="blocksnet.models.service_type.html#blocksnet.models.service_type.ServiceType" title="blocksnet.models.service_type.ServiceType"><em>ServiceType</em></a>) – The type of service for which provision is being calculated.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Updated GeoDataFrame with provision results, including updates to
+‘demand_within’, ‘demand_without’, ‘demand_left’, and ‘capacity_left’.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>geopandas.GeoDataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.method.provision.Provision.model_computed_fields">
+<span class="sig-name descname"><span class="pre">model_computed_fields</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ClassVar</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ComputedFieldInfo</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#blocksnet.method.provision.Provision.model_computed_fields" title="Permalink to this definition"></a></dt>
+<dd><p>A dictionary of computed field names and their corresponding <cite>ComputedFieldInfo</cite> objects.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="blocksnet.method.population_centrality.html" class="btn btn-neutral float-left" title="blocksnet.method.population_centrality" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="blocksnet.method.spacematrix.html" class="btn btn-neutral float-right" title="blocksnet.method.spacematrix" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023-2024, IDU.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+blocksnet.method.spacematrix
+============================
+
+.. automodule:: blocksnet.method.spacematrix
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Spacematrix
+   
+   
+
+   
+   
+   
+
+
+

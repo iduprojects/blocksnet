@@ -1,0 +1,42 @@
+﻿blocksnet.method
+================
+
+.. automodule:: blocksnet.method
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :recursive:
+
+   blocksnet.method.accessibility
+   blocksnet.method.annealing_optimizer
+   blocksnet.method.base_method
+   blocksnet.method.centrality
+   blocksnet.method.connectivity
+   blocksnet.method.diversity
+   blocksnet.method.integration
+   blocksnet.method.land_use_prediction
+   blocksnet.method.population_centrality
+   blocksnet.method.provision
+   blocksnet.method.spacematrix
+   blocksnet.method.vacant_area
+

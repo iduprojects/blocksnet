@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>blocksnet.method.provision &mdash; BlocksNet 0.0.11 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            BlocksNet
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../blocksnet/index.html">BlocksNet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/index.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about_us.html">About us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">BlocksNet</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">blocksnet.method.provision</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for blocksnet.method.provision</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Service type provisions assessment module.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">loguru</span> <span class="kn">import</span> <span class="n">logger</span>
+<span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pulp</span> <span class="kn">import</span> <span class="n">PULP_CBC_CMD</span><span class="p">,</span> <span class="n">LpMaximize</span><span class="p">,</span> <span class="n">LpProblem</span><span class="p">,</span> <span class="n">LpVariable</span><span class="p">,</span> <span class="n">lpSum</span><span class="p">,</span> <span class="n">LpInteger</span>
+<span class="kn">from</span> <span class="nn">..models</span> <span class="kn">import</span> <span class="n">ServiceType</span>
+<span class="kn">from</span> <span class="nn">.base_method</span> <span class="kn">import</span> <span class="n">BaseMethod</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+
+<span class="n">PROVISION_COLUMN</span> <span class="o">=</span> <span class="s2">&quot;provision&quot;</span>
+
+<span class="n">PLOT_KWARGS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;column&quot;</span><span class="p">:</span> <span class="n">PROVISION_COLUMN</span><span class="p">,</span> <span class="s2">&quot;cmap&quot;</span><span class="p">:</span> <span class="s2">&quot;RdYlGn&quot;</span><span class="p">,</span> <span class="s2">&quot;vmin&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;vmax&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;legend&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="ProvisionMethod"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.provision.html#blocksnet.method.provision.ProvisionMethod">[docs]</a><span class="k">class</span> <span class="nc">ProvisionMethod</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Enum for different methods of service provision assessment.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    GREEDY : str</span>
+<span class="sd">        Greedy method for service provision.</span>
+<span class="sd">    GRAVITATIONAL : str</span>
+<span class="sd">        Linear method for service provision, where distances are taken into account as squares.</span>
+<span class="sd">    LINEAR : str</span>
+<span class="sd">        Linear method for service provision, where distances are taken into account linearly.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">GREEDY</span> <span class="o">=</span> <span class="s2">&quot;greedy&quot;</span>
+    <span class="n">GRAVITATIONAL</span> <span class="o">=</span> <span class="s2">&quot;gravitational&quot;</span>
+    <span class="n">LINEAR</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span></div>
+
+
+<div class="viewcode-block" id="Provision"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.provision.html#blocksnet.method.provision.Provision">[docs]</a><span class="k">class</span> <span class="nc">Provision</span><span class="p">(</span><span class="n">BaseMethod</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for assessing provision of services to urban areas.</span>
+
+<span class="sd">    This class provides various methods to evaluate the provision of services</span>
+<span class="sd">    such as healthcare, education, etc., for a given city model. The provision</span>
+<span class="sd">    can be assessed using multiple methods like gravitational models, greedy</span>
+<span class="sd">    allocation, and linear programming-based transportation problem solutions.</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    plot(gdf: gpd.GeoDataFrame, linewidth: float = 0.1, figsize: tuple[int, int] = (10, 10)) -&gt; None</span>
+<span class="sd">        Visualizes provision assessment results for a given GeoDataFrame.</span>
+
+<span class="sd">    stat(gdf: gpd.GeoDataFrame) -&gt; dict[str, float]</span>
+<span class="sd">        Computes basic statistics of provision (mean, median, min, max) from a GeoDataFrame.</span>
+
+<span class="sd">    total(gdf: gpd.GeoDataFrame) -&gt; float</span>
+<span class="sd">        Calculates the total provision ratio from the given GeoDataFrame.</span>
+
+<span class="sd">    get_bounds(service_type: ServiceType | str, update_df: pd.DataFrame = None) -&gt; tuple[float, float]</span>
+<span class="sd">        Returns the lower and upper bounds of provision for a given service type.</span>
+
+<span class="sd">    calculate(service_type: ServiceType | str, update_df: pd.DataFrame | None = None, method: ProvisionMethod = ProvisionMethod.GRAVITATIONAL, self_supply: bool = False) -&gt; gpd.GeoDataFrame</span>
+<span class="sd">        Performs provision assessment for a specified service type and method.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Provision.plot"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.provision.html#blocksnet.method.provision.Provision.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gdf</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">,</span> <span class="n">linewidth</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">figsize</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Visualizes provision assessment results for a given GeoDataFrame.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        gdf : geopandas.GeoDataFrame</span>
+<span class="sd">            GeoDataFrame containing spatial data with provision assessment results.</span>
+<span class="sd">        linewidth : float</span>
+<span class="sd">            Size of polygons&#39; borders, by default 0.1.</span>
+<span class="sd">        figsize : tuple of int, optional</span>
+<span class="sd">            Size of the plot in inches, by default (10, 10).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;#ddd&quot;</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
+        <span class="n">gdf</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="n">linewidth</span><span class="p">,</span> <span class="o">**</span><span class="n">PLOT_KWARGS</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Provision: &quot;</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">total</span><span class="p">(</span><span class="n">gdf</span><span class="p">)</span><span class="si">:</span><span class="s2"> .3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Provision._get_blocks_gdf"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.provision.html#blocksnet.method.provision.Provision._get_blocks_gdf">[docs]</a>    <span class="k">def</span> <span class="nf">_get_blocks_gdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service_type</span><span class="p">:</span> <span class="n">ServiceType</span><span class="p">,</span> <span class="n">update_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates a GeoDataFrame of city blocks with updated service capacities and demands.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        service_type : ServiceType</span>
+<span class="sd">            The service type for which provision assessment is being calculated.</span>
+<span class="sd">        update_df : pandas.DataFrame, optional</span>
+<span class="sd">            DataFrame containing updates to population or capacity, by default None.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        geopandas.GeoDataFrame</span>
+<span class="sd">            GeoDataFrame containing the geometry, demand, and capacity for each block.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">capacity_column</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;capacity_</span><span class="si">{</span><span class="n">service_type</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">gdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">city_model</span><span class="o">.</span><span class="n">get_blocks_gdf</span><span class="p">()[[</span><span class="s2">&quot;geometry&quot;</span><span class="p">,</span> <span class="s2">&quot;population&quot;</span><span class="p">,</span> <span class="n">capacity_column</span><span class="p">]]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">gdf</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">capacity_column</span><span class="p">:</span> <span class="s2">&quot;capacity&quot;</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">update_df</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;population&quot;</span> <span class="ow">in</span> <span class="n">update_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;population&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;population&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">update_df</span><span class="p">[</span><span class="s2">&quot;population&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">service_type</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">update_df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+                <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;capacity&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;capacity&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">update_df</span><span class="p">[</span><span class="n">service_type</span><span class="o">.</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;population&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;population&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">service_type</span><span class="o">.</span><span class="n">calculate_in_need</span><span class="p">)</span>
+        <span class="n">gdf</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;population&quot;</span><span class="p">:</span> <span class="s2">&quot;demand&quot;</span><span class="p">})</span>
+        <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;capacity_left&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;capacity&quot;</span><span class="p">]</span>
+        <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;demand_left&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;demand&quot;</span><span class="p">]</span>
+        <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;demand_within&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;demand_without&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">gdf</span></div>
+
+<div class="viewcode-block" id="Provision.stat"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.provision.html#blocksnet.method.provision.Provision.stat">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">stat</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gdf</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes basic statistics of provision (mean, median, min, max) from a GeoDataFrame.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        gdf : geopandas.GeoDataFrame</span>
+<span class="sd">            GeoDataFrame containing provision data.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            Dictionary with keys &#39;mean&#39;, &#39;median&#39;, &#39;min&#39;, and &#39;max&#39; representing provision statistics.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;provision&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+            <span class="s2">&quot;median&quot;</span><span class="p">:</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;provision&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">(),</span>
+            <span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;provision&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+            <span class="s2">&quot;max&quot;</span><span class="p">:</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;provision&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
+        <span class="p">}</span></div>
+
+<div class="viewcode-block" id="Provision.total"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.provision.html#blocksnet.method.provision.Provision.total">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">total</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">gdf</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the total provision by dividing the sum of met demand</span>
+<span class="sd">        by the total demand for all blocks in the GeoDataFrame.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        gdf : geopandas.GeoDataFrame</span>
+<span class="sd">            GeoDataFrame containing the columns &#39;demand_within&#39; and &#39;demand&#39;,</span>
+<span class="sd">            representing the met demand and total demand for each block.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The ratio of total met demand to total demand, representing overall provision.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;demand_within&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;demand&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Provision._get_lower_bound"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.provision.html#blocksnet.method.provision.Provision._get_lower_bound">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_lower_bound</span><span class="p">(</span><span class="n">gdf</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the lower bound of provision, assuming each block</span>
+<span class="sd">        meets its demand up to its capacity.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        gdf : geopandas.GeoDataFrame</span>
+<span class="sd">            GeoDataFrame containing &#39;capacity&#39; and &#39;demand&#39; columns.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The lower bound of provision as the ratio of the total met demand</span>
+<span class="sd">            (limited by capacity) to the total demand.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">gdf</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;demand_within&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;capacity&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;demand&quot;</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;demand_within&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;demand&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Provision._get_upper_bound"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.provision.html#blocksnet.method.provision.Provision._get_upper_bound">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_upper_bound</span><span class="p">(</span><span class="n">gdf</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the upper bound of provision, assuming total capacity can be</span>
+<span class="sd">        fully allocated to meet total demand.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        gdf : geopandas.GeoDataFrame</span>
+<span class="sd">            GeoDataFrame containing &#39;capacity&#39; and &#39;demand&#39; columns.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            The upper bound of provision, calculated as the minimum of the total</span>
+<span class="sd">            capacity-to-demand ratio or 1 (full provision).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">gdf</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">capacity</span> <span class="o">=</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;capacity&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="n">demand</span> <span class="o">=</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;demand&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">capacity</span> <span class="o">/</span> <span class="n">demand</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Provision.get_bounds"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.provision.html#blocksnet.method.provision.Provision.get_bounds">[docs]</a>    <span class="k">def</span> <span class="nf">get_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">service_type</span><span class="p">:</span> <span class="n">ServiceType</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="n">update_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the lower and upper bounds of provision for a given service type.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        service_type : ServiceType or str</span>
+<span class="sd">            The service type for which provision bounds are calculated.</span>
+<span class="sd">        update_df : pandas.DataFrame, optional</span>
+<span class="sd">            DataFrame containing updates to population or capacity, by default None.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple of float</span>
+<span class="sd">            A tuple (lower_bound, upper_bound) representing the lower and upper</span>
+<span class="sd">            bounds of provision.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">service_type</span><span class="p">:</span> <span class="n">ServiceType</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">city_model</span><span class="p">[</span><span class="n">service_type</span><span class="p">]</span>
+        <span class="n">gdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_blocks_gdf</span><span class="p">(</span><span class="n">service_type</span><span class="p">,</span> <span class="n">update_df</span><span class="p">)</span>
+        <span class="n">lower_bound</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_lower_bound</span><span class="p">(</span><span class="n">gdf</span><span class="p">)</span>
+        <span class="n">upper_bound</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_upper_bound</span><span class="p">(</span><span class="n">gdf</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lower_bound</span><span class="p">,</span> <span class="n">upper_bound</span></div>
+
+<div class="viewcode-block" id="Provision.calculate"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.provision.html#blocksnet.method.provision.Provision.calculate">[docs]</a>    <span class="k">def</span> <span class="nf">calculate</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">service_type</span><span class="p">:</span> <span class="n">ServiceType</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">update_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="n">ProvisionMethod</span> <span class="o">=</span> <span class="n">ProvisionMethod</span><span class="o">.</span><span class="n">GRAVITATIONAL</span><span class="p">,</span>
+        <span class="n">self_supply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Performs provision assessment for a specified service type and method.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        service_type : ServiceType or str</span>
+<span class="sd">            The type of service for which the provision is calculated.</span>
+<span class="sd">        update_df : pandas.DataFrame, optional</span>
+<span class="sd">            Updated DataFrame for blocks (demand or capacity changes), by default None.</span>
+<span class="sd">        method : ProvisionMethod, optional</span>
+<span class="sd">            The provision method to be used (GRAVITATIONAL by default).</span>
+<span class="sd">        self_supply : bool, optional</span>
+<span class="sd">            If True, blocks are allowed to meet their own demand directly using their</span>
+<span class="sd">            own capacity, by default False.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        geopandas.GeoDataFrame</span>
+<span class="sd">            GeoDataFrame with provision data, including &#39;demand_within&#39;, &#39;demand_left&#39;,</span>
+<span class="sd">            &#39;capacity_left&#39;, and &#39;provision&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">service_type</span><span class="p">:</span> <span class="n">ServiceType</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">city_model</span><span class="p">[</span><span class="n">service_type</span><span class="p">]</span>
+        <span class="n">gdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_blocks_gdf</span><span class="p">(</span><span class="n">service_type</span><span class="p">,</span> <span class="n">update_df</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">self_supply</span><span class="p">:</span>
+            <span class="n">supply</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;demand&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;capacity&quot;</span><span class="p">]),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;demand_within&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">supply</span>
+            <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;demand_left&quot;</span><span class="p">]</span> <span class="o">-=</span> <span class="n">supply</span>
+            <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;capacity_left&quot;</span><span class="p">]</span> <span class="o">-=</span> <span class="n">supply</span>
+
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="n">ProvisionMethod</span><span class="o">.</span><span class="n">GREEDY</span><span class="p">:</span>
+            <span class="n">gdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_greedy_provision</span><span class="p">(</span><span class="n">gdf</span><span class="p">,</span> <span class="n">service_type</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">gdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lp_provision</span><span class="p">(</span><span class="n">gdf</span><span class="p">,</span> <span class="n">service_type</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
+
+        <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;provision&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;demand_within&quot;</span><span class="p">]</span> <span class="o">/</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;demand&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="s2">&quot;Provision assessment finished&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">gdf</span></div>
+
+<div class="viewcode-block" id="Provision._lp_provision"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.provision.html#blocksnet.method.provision.Provision._lp_provision">[docs]</a>    <span class="k">def</span> <span class="nf">_lp_provision</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">gdf</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">,</span>
+        <span class="n">service_type</span><span class="p">:</span> <span class="n">ServiceType</span><span class="p">,</span>
+        <span class="n">method</span><span class="p">:</span> <span class="n">ProvisionMethod</span><span class="p">,</span>
+        <span class="n">selection_range</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Solves the provision problem using a Linear Programming (LP) solver.</span>
+<span class="sd">        Loops itself till capacity or demand left meet 0.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        gdf : geopandas.GeoDataFrame</span>
+<span class="sd">            GeoDataFrame containing blocks with demand and capacity.</span>
+<span class="sd">        service_type : ServiceType</span>
+<span class="sd">            The type of service for which provision is being calculated.</span>
+<span class="sd">        method : ProvisionMethod</span>
+<span class="sd">            The method used to calculate provision (LINEAR or GRAVITATIONAL).</span>
+<span class="sd">        selection_range : float | None</span>
+<span class="sd">            The accessibility range defining maximum distance between living blocks and service blocks</span>
+<span class="sd">            in the current problem loop, default None (actually service type accessibility).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        geopandas.GeoDataFrame</span>
+<span class="sd">            Updated GeoDataFrame with provision results, including updates to</span>
+<span class="sd">            &#39;demand_within&#39;, &#39;demand_without&#39;, &#39;demand_left&#39;, and &#39;capacity_left&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">selection_range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">selection_range</span> <span class="o">=</span> <span class="n">service_type</span><span class="o">.</span><span class="n">accessibility</span>
+
+        <span class="k">def</span> <span class="nf">_get_distance</span><span class="p">(</span><span class="n">id1</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">id2</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">city_model</span><span class="o">.</span><span class="n">accessibility_matrix</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">id1</span><span class="p">,</span> <span class="n">id2</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">distance</span> <span class="k">if</span> <span class="n">distance</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="mi">1</span>
+
+        <span class="k">def</span> <span class="nf">_get_weight</span><span class="p">(</span><span class="n">id1</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">id2</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="n">_get_distance</span><span class="p">(</span><span class="n">id1</span><span class="p">,</span> <span class="n">id2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="n">ProvisionMethod</span><span class="o">.</span><span class="n">LINEAR</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">distance</span>
+            <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">distance</span> <span class="o">*</span> <span class="n">distance</span><span class="p">)</span>
+
+        <span class="n">demand</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;demand_left&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">capacity</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;capacity_left&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Setting an LP problem for accessibility = </span><span class="si">{</span><span class="n">selection_range</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">demand</span><span class="p">)</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">capacity</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">prob</span> <span class="o">=</span> <span class="n">LpProblem</span><span class="p">(</span><span class="s2">&quot;Provision&quot;</span><span class="p">,</span> <span class="n">LpMaximize</span><span class="p">)</span>
+        <span class="c1"># Precompute distance and filter products</span>
+        <span class="n">products</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">demand</span><span class="o">.</span><span class="n">index</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">capacity</span><span class="o">.</span><span class="n">index</span>
+            <span class="k">if</span> <span class="n">_get_distance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">selection_range</span>  <span class="c1"># service_type.accessibility * 2</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Create the decision variable dictionary</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">LpVariable</span><span class="o">.</span><span class="n">dicts</span><span class="p">(</span><span class="s2">&quot;Route&quot;</span><span class="p">,</span> <span class="n">products</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">cat</span><span class="o">=</span><span class="n">LpInteger</span><span class="p">)</span>
+
+        <span class="c1"># Objective Function</span>
+        <span class="n">prob</span> <span class="o">+=</span> <span class="n">lpSum</span><span class="p">(</span><span class="n">_get_weight</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">products</span><span class="p">)</span>
+
+        <span class="c1"># Constraint dictionaries</span>
+        <span class="n">demand_constraints</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">demand</span><span class="o">.</span><span class="n">index</span><span class="p">}</span>
+        <span class="n">capacity_constraints</span> <span class="o">=</span> <span class="p">{</span><span class="n">m</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">capacity</span><span class="o">.</span><span class="n">index</span><span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">products</span><span class="p">:</span>
+            <span class="n">demand_constraints</span><span class="p">[</span><span class="n">n</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">])</span>
+            <span class="n">capacity_constraints</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">])</span>
+
+        <span class="c1"># Add Demand Constraints</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">demand</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+            <span class="n">prob</span> <span class="o">+=</span> <span class="n">lpSum</span><span class="p">(</span><span class="n">demand_constraints</span><span class="p">[</span><span class="n">n</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="n">demand</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">n</span><span class="p">,</span> <span class="s2">&quot;demand_left&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Add Capacity Constraints</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">capacity</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+            <span class="n">prob</span> <span class="o">+=</span> <span class="n">lpSum</span><span class="p">(</span><span class="n">capacity_constraints</span><span class="p">[</span><span class="n">m</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="n">capacity</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;capacity_left&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Solving the problem&quot;</span><span class="p">)</span>
+        <span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">PULP_CBC_CMD</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Restoring values from variables&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">prob</span><span class="o">.</span><span class="n">variables</span><span class="p">():</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">var</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;(&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">name</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;dummy&quot;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">name</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="n">_get_distance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">distance</span> <span class="o">&lt;=</span> <span class="n">service_type</span><span class="o">.</span><span class="n">accessibility</span><span class="p">:</span>
+                    <span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="s2">&quot;demand_within&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">value</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="s2">&quot;demand_without&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">value</span>
+                <span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="s2">&quot;demand_left&quot;</span><span class="p">]</span> <span class="o">-=</span> <span class="n">value</span>
+                <span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">b</span><span class="p">,</span> <span class="s2">&quot;capacity_left&quot;</span><span class="p">]</span> <span class="o">-=</span> <span class="n">value</span>
+
+        <span class="k">if</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;demand_left&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;capacity_left&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lp_provision</span><span class="p">(</span><span class="n">gdf</span><span class="p">,</span> <span class="n">service_type</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">selection_range</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gdf</span></div>
+
+<div class="viewcode-block" id="Provision._greedy_provision"><a class="viewcode-back" href="../../../api/_autosummary/blocksnet.method.provision.html#blocksnet.method.provision.Provision._greedy_provision">[docs]</a>    <span class="k">def</span> <span class="nf">_greedy_provision</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gdf</span><span class="p">:</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">,</span> <span class="n">service_type</span><span class="p">:</span> <span class="n">ServiceType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Iteratively assigns demand to the closest available capacity using a greedy method.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        gdf : geopandas.GeoDataFrame</span>
+<span class="sd">            GeoDataFrame containing blocks with demand and capacity.</span>
+<span class="sd">        service_type : ServiceType</span>
+<span class="sd">            The type of service for which provision is being calculated.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        geopandas.GeoDataFrame</span>
+<span class="sd">            Updated GeoDataFrame with provision results, including updates to</span>
+<span class="sd">            &#39;demand_within&#39;, &#39;demand_without&#39;, &#39;demand_left&#39;, and &#39;capacity_left&#39;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">demand_gdf</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;demand_left&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">capacity_gdf</span> <span class="o">=</span> <span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;capacity_left&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">demand_blocks</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">city_model</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">demand_gdf</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">capacity_blocks</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">city_model</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">capacity_gdf</span><span class="o">.</span><span class="n">index</span><span class="p">]</span>
+
+        <span class="k">while</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;demand_left&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">gdf</span><span class="p">[</span><span class="s2">&quot;capacity_left&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+            <span class="k">for</span> <span class="n">demand_block</span> <span class="ow">in</span> <span class="n">demand_blocks</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">capacity_blocks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">capacity_block</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+                    <span class="n">capacity_blocks</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">capacity_block</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">city_model</span><span class="p">[</span><span class="n">demand_block</span><span class="p">,</span> <span class="n">capacity_block</span><span class="p">]</span>
+                <span class="p">)</span>
+
+                <span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">demand_block</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;demand_left&quot;</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="n">distance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">city_model</span><span class="p">[</span><span class="n">demand_block</span><span class="p">,</span> <span class="n">capacity_block</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">distance</span> <span class="o">&lt;=</span> <span class="n">service_type</span><span class="o">.</span><span class="n">accessibility</span><span class="p">:</span>
+                    <span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">demand_block</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;demand_within&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">demand_block</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;demand_without&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="c1"># remove block if it&#39;s demand_left is empty</span>
+                <span class="k">if</span> <span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">demand_block</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;demand_left&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">demand_blocks</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">demand_block</span><span class="p">)</span>
+
+                <span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">capacity_block</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;capacity_left&quot;</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="c1"># remove block if its capacity_left is empty</span>
+                <span class="k">if</span> <span class="n">gdf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">capacity_block</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;capacity_left&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">capacity_blocks</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">capacity_block</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">gdf</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023-2024, IDU.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

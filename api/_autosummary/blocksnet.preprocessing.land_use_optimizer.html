@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>blocksnet.preprocessing.land_use_optimizer &mdash; BlocksNet 0.0.11 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="blocksnet.preprocessing.land_use_processor" href="blocksnet.preprocessing.land_use_processor.html" />
+    <link rel="prev" title="blocksnet.preprocessing.blocks_splitter" href="blocksnet.preprocessing.blocks_splitter.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            BlocksNet
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../blocksnet/index.html">BlocksNet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples/index.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="blocksnet.preprocessing.html">blocksnet.preprocessing</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.preprocessing.accessibility_processor.html">blocksnet.preprocessing.accessibility_processor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.preprocessing.blocks_generator.html">blocksnet.preprocessing.blocks_generator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.preprocessing.blocks_splitter.html">blocksnet.preprocessing.blocks_splitter</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">blocksnet.preprocessing.land_use_optimizer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#blocksnet.preprocessing.land_use_optimizer.BlocksSchema"><code class="docutils literal notranslate"><span class="pre">BlocksSchema</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer"><code class="docutils literal notranslate"><span class="pre">LandUseOptimizer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="blocksnet.preprocessing.land_use_processor.html">blocksnet.preprocessing.land_use_processor</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="blocksnet.models.html">blocksnet.models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="blocksnet.method.html">blocksnet.method</a></li>
+<li class="toctree-l2"><a class="reference internal" href="blocksnet.utils.html">blocksnet.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../about_us.html">About us</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BlocksNet</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">API documentation</a></li>
+          <li class="breadcrumb-item"><a href="blocksnet.preprocessing.html">blocksnet.preprocessing</a></li>
+      <li class="breadcrumb-item active">blocksnet.preprocessing.land_use_optimizer</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/_autosummary/blocksnet.preprocessing.land_use_optimizer.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-blocksnet.preprocessing.land_use_optimizer">
+<span id="blocksnet-preprocessing-land-use-optimizer"></span><h1>blocksnet.preprocessing.land_use_optimizer<a class="headerlink" href="#module-blocksnet.preprocessing.land_use_optimizer" title="Permalink to this heading"></a></h1>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#blocksnet.preprocessing.land_use_optimizer.BlocksSchema" title="blocksnet.preprocessing.land_use_optimizer.BlocksSchema"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BlocksSchema</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Schema for validating blocks GeoDataFrame.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer" title="blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LandUseOptimizer</span></code></a>(blocks[, verbose])</p></td>
+<td><p>Optimizes the allocation of land use within a set of urban blocks.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt class="sig sig-object py" id="blocksnet.preprocessing.land_use_optimizer.BlocksSchema">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blocksnet.preprocessing.land_use_optimizer.</span></span><span class="sig-name descname"><span class="pre">BlocksSchema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/preprocessing/land_use_optimizer.html#BlocksSchema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.preprocessing.land_use_optimizer.BlocksSchema" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="blocksnet.models.schema.html#blocksnet.models.schema.BaseSchema" title="blocksnet.models.schema.BaseSchema"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSchema</span></code></a></p>
+<p>Schema for validating blocks GeoDataFrame.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>_geom_types</strong> (<em>list</em>) – List of allowed geometry types for the blocks, default is [shapely.Polygon].</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="blocksnet.preprocessing.land_use_optimizer.BlocksSchema.Config">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Config</span></span><a class="headerlink" href="#blocksnet.preprocessing.land_use_optimizer.BlocksSchema.Config" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="blocksnet.models.schema.html#blocksnet.models.schema.BaseSchema.Config" title="blocksnet.models.schema.BaseSchema.Config"><code class="xref py py-class docutils literal notranslate"><span class="pre">Config</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="blocksnet.preprocessing.land_use_optimizer.BlocksSchema.Config.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'BlocksSchema'</span></em><a class="headerlink" href="#blocksnet.preprocessing.land_use_optimizer.BlocksSchema.Config.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">blocksnet.preprocessing.land_use_optimizer.</span></span><span class="sig-name descname"><span class="pre">LandUseOptimizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/preprocessing/land_use_optimizer.html#LandUseOptimizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Optimizes the allocation of land use within a set of urban blocks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>blocks</strong> (<em>gpd.GeoDataFrame</em>) – GeoDataFrame containing the urban blocks with geometry.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, progress is displayed using tqdm (default is True).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._split_polygon">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_split_polygon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">polygon</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeometryCollection</span></span></span><a class="reference internal" href="../../_modules/blocksnet/preprocessing/land_use_optimizer.html#LandUseOptimizer._split_polygon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._split_polygon" title="Permalink to this definition"></a></dt>
+<dd><p>Splits a polygon into two parts by cutting along its midpoint.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>polygon</strong> (<em>shapely.Polygon</em>) – The polygon to split.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A collection of geometries resulting from the split operation.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>shapely.GeometryCollection</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._is_block_large">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_is_block_large</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block_geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Polygon</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/blocksnet/preprocessing/land_use_optimizer.html#LandUseOptimizer._is_block_large"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._is_block_large" title="Permalink to this definition"></a></dt>
+<dd><p>Determines if a block is too large based on its area and aspect ratio.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>block_geometry</strong> (<em>shapely.Polygon</em>) – The geometry of the block to evaluate.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the block exceeds size or aspect ratio constraints, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._split_large_blocks">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_split_large_blocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks_gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/preprocessing/land_use_optimizer.html#LandUseOptimizer._split_large_blocks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._split_large_blocks" title="Permalink to this definition"></a></dt>
+<dd><p>Splits blocks in the GeoDataFrame that are too large according to predefined rules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>blocks_gdf</strong> (<em>gpd.GeoDataFrame</em>) – The GeoDataFrame containing block geometries.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Updated GeoDataFrame with large blocks split into smaller ones.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>gpd.GeoDataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._get_adjacency_graph">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_get_adjacency_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks_gdf</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GeoDataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/preprocessing/land_use_optimizer.html#LandUseOptimizer._get_adjacency_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._get_adjacency_graph" title="Permalink to this definition"></a></dt>
+<dd><p>Generates an adjacency graph of blocks based on their spatial proximity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>blocks_gdf</strong> (<em>gpd.GeoDataFrame</em>) – The GeoDataFrame of blocks with geometries.</p></li>
+<li><p><strong>buffer</strong> (<em>float</em><em>, </em><em>optional</em>) – Buffer size used for detecting intersections (default is BUFFER_MIN).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A NetworkX graph representing the adjacency relations between blocks.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>nx.Graph</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._generate_initial_X">
+<span class="sig-name descname"><span class="pre">_generate_initial_X</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><span class="pre">blocksnet.models.land_use.LandUse</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/blocksnet/preprocessing/land_use_optimizer.html#LandUseOptimizer._generate_initial_X"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._generate_initial_X" title="Permalink to this definition"></a></dt>
+<dd><p>Generates an initial configuration of land uses for the blocks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary mapping block IDs to initial land uses (default is LandUse.RECREATION).</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict[int, <a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse">LandUse</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._perturb">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_perturb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><span class="pre">blocksnet.models.land_use.LandUse</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><span class="pre">blocksnet.models.land_use.LandUse</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/blocksnet/preprocessing/land_use_optimizer.html#LandUseOptimizer._perturb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._perturb" title="Permalink to this definition"></a></dt>
+<dd><p>Perturbs the current land use configuration by randomly changing the land use of one block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><em>LandUse</em></a><em>]</em>) – Current land use configuration.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Modified configuration with one randomly changed land use.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[int, <a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse">LandUse</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._check_adj_rules">
+<span class="sig-name descname"><span class="pre">_check_adj_rules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><span class="pre">blocksnet.models.land_use.LandUse</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/blocksnet/preprocessing/land_use_optimizer.html#LandUseOptimizer._check_adj_rules"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._check_adj_rules" title="Permalink to this definition"></a></dt>
+<dd><p>Validates the adjacency rules for the given land use configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><em>LandUse</em></a><em>]</em>) – Land use configuration to check.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the configuration satisfies adjacency rules, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._check_area_ranges">
+<span class="sig-name descname"><span class="pre">_check_area_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><span class="pre">blocksnet.models.land_use.LandUse</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/preprocessing/land_use_optimizer.html#LandUseOptimizer._check_area_ranges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._check_area_ranges" title="Permalink to this definition"></a></dt>
+<dd><p>Validates that each block’s area falls within the allowed range for its land use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><em>LandUse</em></a><em>]</em>) – Land use configuration to check.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if all areas are within valid ranges, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._check_ratio_ranges">
+<span class="sig-name descname"><span class="pre">_check_ratio_ranges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><span class="pre">blocksnet.models.land_use.LandUse</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/blocksnet/preprocessing/land_use_optimizer.html#LandUseOptimizer._check_ratio_ranges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._check_ratio_ranges" title="Permalink to this definition"></a></dt>
+<dd><p>Checks whether the aspect ratio of each block falls within the allowed range for its land use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><em>LandUse</em></a><em>]</em>) – Land use configuration to check.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if all aspect ratios are valid, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer.to_shares_dict">
+<span class="sig-name descname"><span class="pre">to_shares_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><span class="pre">blocksnet.models.land_use.LandUse</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="reference internal" href="../../_modules/blocksnet/preprocessing/land_use_optimizer.html#LandUseOptimizer.to_shares_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer.to_shares_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Converts the land use configuration to a dictionary of land use area shares.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><em>LandUse</em></a><em>]</em>) – Land use configuration.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary mapping each land use to its share of the total area.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer.to_gdf">
+<span class="sig-name descname"><span class="pre">to_gdf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><span class="pre">blocksnet.models.land_use.LandUse</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">GeoDataFrame</span></span></span><a class="reference internal" href="../../_modules/blocksnet/preprocessing/land_use_optimizer.html#LandUseOptimizer.to_gdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer.to_gdf" title="Permalink to this definition"></a></dt>
+<dd><p>Converts the land use configuration into a GeoDataFrame with land use labels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><em>LandUse</em></a><em>]</em>) – Land use configuration.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>GeoDataFrame with land use assignments.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>gpd.GeoDataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._objective">
+<span class="sig-name descname"><span class="pre">_objective</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><span class="pre">blocksnet.models.land_use.LandUse</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lu_shares</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><span class="pre">blocksnet.models.land_use.LandUse</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="reference internal" href="../../_modules/blocksnet/preprocessing/land_use_optimizer.html#LandUseOptimizer._objective"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer._objective" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the objective function value, which measures deviation from target land use shares.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>dict</em><em>[</em><em>int</em><em>, </em><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><em>LandUse</em></a><em>]</em>) – Land use configuration.</p></li>
+<li><p><strong>lu_shares</strong> (<em>dict</em><em>[</em><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><em>LandUse</em></a><em>, </em><em>float</em><em>]</em>) – Target land use shares.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sum of squared deviations between actual and target land use shares.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lu_shares</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><span class="pre">blocksnet.models.land_use.LandUse</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.99</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t_min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span></span></span><a class="reference internal" href="../../_modules/blocksnet/preprocessing/land_use_optimizer.html#LandUseOptimizer.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#blocksnet.preprocessing.land_use_optimizer.LandUseOptimizer.run" title="Permalink to this definition"></a></dt>
+<dd><p>Runs the optimization algorithm to find the optimal land use configuration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lu_shares</strong> (<em>dict</em><em>[</em><a class="reference internal" href="blocksnet.models.land_use.html#blocksnet.models.land_use.LandUse" title="blocksnet.models.land_use.LandUse"><em>LandUse</em></a><em>, </em><em>float</em><em>]</em>) – Target shares for each land use, must sum to 1.</p></li>
+<li><p><strong>rate</strong> (<em>float</em><em>, </em><em>optional</em>) – Cooling rate for the simulated annealing algorithm (default is 0.99).</p></li>
+<li><p><strong>t_max</strong> (<em>float</em><em>, </em><em>optional</em>) – Initial temperature for simulated annealing (default is 100).</p></li>
+<li><p><strong>t_min</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum temperature for simulated annealing (default is 1e-3).</p></li>
+<li><p><strong>max_iter</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum number of iterations for the optimization (default is 10000).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing the best land use configuration, best objective value, list of configurations, and list of objective values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="blocksnet.preprocessing.blocks_splitter.html" class="btn btn-neutral float-left" title="blocksnet.preprocessing.blocks_splitter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="blocksnet.preprocessing.land_use_processor.html" class="btn btn-neutral float-right" title="blocksnet.preprocessing.land_use_processor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023-2024, IDU.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
